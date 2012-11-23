@@ -57,12 +57,8 @@ EntityNumberixi = ig.Entity.extend({
 		this.startX = this.pos.x;
 	},
 
-    kill: function() {
-        if (this.anims.death.loopCount > 0) {
-            this.parent();
-        } else {
-            this.currentAnim = this.anims.death;
-        }
+    cleanup: function() {
+        this.currentAnim = this.anims.death;
     },
 	
 	update: function() {
@@ -88,19 +84,18 @@ EntityNumberixi = ig.Entity.extend({
 	        this.dragReturnVelocity.y = dy * 1.5;
 	        this.maxVel = this.returningMaxVel;
 
-            // check monsters
-            var monsters = ig.game.getEntitiesByType('EntityAnswerixi');
-            var creature = this;
-            monsters.forEach(function(monster) {
-                var dx = Math.round(creature.pos.x - monster.pos.x);
-                var dy = Math.round(creature.pos.y - monster.pos.y);
-                var offBy = 50/2;
+            // check answerixis
+            var answerixis = ig.game.getEntitiesByType('EntityAnswerixi');
+            var numberixi = this;
+            answerixis.forEach(function(answerixi) {
+                var dx = Math.round(numberixi.pos.x - answerixi.pos.x);
+                var dy = Math.round(numberixi.pos.y - answerixi.pos.y);
+                var offBy = 50;
                 if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
-                    monster.kill();
-                    creature.kill();
+                    answerixi.cleanup();
+                    numberixi.cleanup();
                 }
             });
-
 
 	    }
 	    if (this.state == NumberixiState.RETURNING) {
@@ -183,7 +178,6 @@ EntityNumberixi = ig.Entity.extend({
 	},
 	
 	check: function( other ) {
-		//finish
 	}
 });
 

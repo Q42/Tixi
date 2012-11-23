@@ -48,6 +48,9 @@ MyGame = ig.Game.extend({
 	},
 
 	loadNextLevel: function() {
+		//console.log('loadNextLevel');
+		//ig.system.clear('#FFF');
+
 		this.currentLevel++; // TODO maximeren
 		this.loadLevel( window['Level' + this.currentLevel] );
 	},

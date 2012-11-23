@@ -104,7 +104,7 @@ ig.module(
 
                     if (width <= -10) {
 
-                        // TODO fade out
+                        
                         this.animSheet.width = this.originalAnimSheetWidth;
                         ig.game.loadNextLevel();
                         // TODO fade in
