@@ -8,14 +8,14 @@ ig.module(
 
     	PlayerState = {
     		PLAYING: 'PLAYING',
-    		WINNING: 'WINNING'
+    		EXITIXING: 'EXITIXING'
     	};
 
         EntityPlayer = ig.Entity.extend({
 
             // The players (collision) size is a bit smaller than the animation
             // frames, so we have to move the collision box a bit (offset)
-            size:{x:124, y:174},
+            size:{x:123, y:174},
             offset:{x:0, y:0},
 
             maxVel:{x:200, y:200},
@@ -26,12 +26,12 @@ ig.module(
             collides:ig.Entity.COLLIDES.PASSIVE,
 
             state: PlayerState.PLAYING,
+            exitixi: undefined,
 
             animSheet:new ig.AnimationSheet('media/player.png', 123, 174),
 
             accelGround:400,
             accelLadder:200,
-            health:10,
             flip:false,
 
             init:function (x, y, settings) {
@@ -39,6 +39,7 @@ ig.module(
                 this.dest = {x:x, y:y};
 
                 // Add the animations
+                this.addAnim('pause', 2, [0]);
                 this.addAnim('idle', .5, [0, 1]);
                 this.addAnim('run', 0.07, [0, 1]);
             },
@@ -85,6 +86,21 @@ ig.module(
 
 	                this.currentAnim.flip.x = this.flip;
 	            }
+
+                if (this.state == PlayerState.EXITIXING) {
+                    var width = Math.min(this.size.x, this.exitixi.pos.x + this.exitixi.size.x - this.pos.x);
+
+                    // this.currentAnim = null;
+                    // this.animSheet.image.draw(
+                    //     this.pos.x,
+                    //     this.pos.y,
+                    //     0, 0,
+                    //     this.animSheet.width, this.animSheet.height
+                    // );
+
+                    this.animSheet.width = width;
+                    this.currentAnim = this.anims.pause;
+                }
 
                 // move!
                 this.parent();

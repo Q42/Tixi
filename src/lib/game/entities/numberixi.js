@@ -41,8 +41,8 @@ EntityNumberixi = ig.Entity.extend({
 		this.parent( x, y, settings );
 		
 		this.addAnim( 'crawl', 1, [0] );
+		this.addAnim( 'crawlflipped', 1, [1] );
         this.addAnim( 'death', 1, [0], true);
-		this.addAnim( 'crawlflipped', 1, [0] );
 
 		this.startX = this.pos.x;
 	},

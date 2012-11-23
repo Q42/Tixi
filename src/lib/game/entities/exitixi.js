@@ -37,7 +37,8 @@ EntityExitixi = ig.Entity.extend({
 
 		if (!isPlayer) return;
 
-		other.state = PlayerState.WINNING;
+		other.state = PlayerState.EXITIXING;
+		other.exitixi = this;
 	}
 });
 
