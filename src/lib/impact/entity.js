@@ -64,10 +64,12 @@ ig.Entity = ig.Class.extend({
 		this.last.x = this.pos.x;
 		this.last.y = this.pos.y;
 		this.vel.y += ig.game.gravity * ig.system.tick * this.gravityFactor;
+
 		
 		this.vel.x = this.getNewVelocity( this.vel.x, this.accel.x, this.friction.x, this.maxVel.x );
 		this.vel.y = this.getNewVelocity( this.vel.y, this.accel.y, this.friction.y, this.maxVel.y );
 		
+
 		// movement & collision
 		var mx = this.vel.x * ig.system.tick;
 		var my = this.vel.y * ig.system.tick;

@@ -23,9 +23,7 @@ MyGame = ig.Game.extend({
 		// Bind keys
 		ig.input.bind( ig.KEY.LEFT_ARROW, 'left' );
 		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
-		ig.input.bind( ig.KEY.X, 'jump' );
-		ig.input.bindTouch( '#canvas', 'jump' );
-		ig.input.bind( ig.KEY.C, 'shoot' );
+		ig.input.bind(ig.KEY.MOUSE1, 'click');
 		
 		// Load the LevelTest as required above ('game.level.test')
 		this.loadLevel( LevelLevel_1 );
