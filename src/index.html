@@ -27,6 +27,7 @@
 	</style>
 
 	<script type="text/javascript" src="lib/impact/impact.js"></script>
+    <script type="text/javascript" src="lib/chroma.min.js"></script>
 	<script type="text/javascript" src="lib/game/main.js"></script>
 	<script>
 		(function() {
@@ -56,7 +57,7 @@
 
 				if( color ) {
 					console.info('Setting ambilight to', color);
-					//img.src = 'http://www.huelandsspoor.nl/api/lamps/setcolor?lamps=&color=' + color;
+					img.src = 'http://www.huelandsspoor.nl/api/lamps/setcolor?lamps=&color=' + color;
 				} else {
 					console.warn('No ambilight color found!');
 				}

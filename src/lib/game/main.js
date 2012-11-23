@@ -23,19 +23,6 @@ function _rgbToHex(r, g, b) {
 	return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
-function _hexForTimestamp( timestamp ) {
-	var frequency = 0.3
-	  , duration = 120*1000.0
-	  , offset = 32.0 * (timestamp % duration) / duration
-	  , red = Math.sin(frequency * offset + 0) * 127 + 128
-	  , green = Math.sin(frequency * offset + 2) * 127 + 128
-	  , blue  = Math.sin(frequency * offset + 4) * 127 + 128
-	  , hex = _rgbToHex(red, green, blue)
-
-	return hex;
-}
-
-
 
 MyGame = ig.Game.extend({
 
@@ -58,6 +45,7 @@ MyGame = ig.Game.extend({
 
 		// Load the LevelTest as required above ('game.level.test')
 		this.loadLevel( Level1 );
+
 	},
 
 	loadNextLevel: function() {
@@ -84,20 +72,50 @@ MyGame = ig.Game.extend({
 		this.parent();
 
 		var now = new Date().getTime()
-		  , hex = _hexForTimestamp( now )
+		  , hex = this.getHexForTimestamp( now )
 
 		ig.game.clearColor = '#' + hex;
 
 		// Stuur de ambilight kleur maar 1 keer per seconden.
 		//if( now - _lastUpdated > 1000) {
 			// Ambilight heeft wat lag...
-			var lagHex = _hexForTimestamp( now + 1500);
+			var lagHex = this.getHexForTimestamp( now + 1500);
 			//console.log( hex, lagHex );
 			sessionStorage.setItem('ambilightColor', lagHex);
 			_lastUpdated = now;
 		//}
-	}
-});
+	},
+
+    getHexForTimestamp: function(timestamp) {
+        scale = new chroma.ColorScale({
+            colors: [
+                '#0F2A30', // 0u
+                '#07151F', // 5u
+                '#0D68FE', // 8u
+                '#0C63FE', // 17u
+                '#1D1D33', // 20u
+                '#0F2A30' // 23u
+            ],
+            positions: [
+                0.0,
+                5.0/24.0,
+                8.0/24.0,
+                17.0/24.0,
+                20.0/24.0,
+                1.0],
+            mode: 'rgb'
+        });
+
+        var duration = 40*1000.0
+            , offset = (timestamp % duration) / duration;
+
+        var color = scale.getColor(offset);
+
+        return color.hex().substring(1);
+    }
+
+
+    });
 
 
 
