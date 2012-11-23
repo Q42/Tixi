@@ -38,6 +38,7 @@ ig.module(
             init:function (x, y, settings) {
                 this.parent(x, y, settings);
                 this.dest = {x:x, y:y};
+                this.animSheet.width = this.originalAnimSheetWidth;
 
                 // Add the animations
                 this.addAnim('pause', 2, [0]);
@@ -105,11 +106,7 @@ ig.module(
                     this.currentAnim = this.anims.pause;
 
                     if (width <= -10) {
-
-                        
-                        this.animSheet.width = this.originalAnimSheetWidth;
                         ig.game.loadNextLevel();
-                        // TODO fade in
                     }
                 }
 

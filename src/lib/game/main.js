@@ -5,6 +5,8 @@ ig.module(
 	'impact.game',
 	'impact.font',
 
+	'plugins.screen-fader',
+
 	'game.entities.player',
 	'game.levels.1',
 	'game.levels.2'
@@ -23,15 +25,22 @@ function _rgbToHex(r, g, b) {
 	return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
+GameState = {
+	LOADED: 'LOADED',
+	LOADING: 'LOADING'
+};
+
 
 MyGame = ig.Game.extend({
 
 	gravity: 300, // All entities are affected by this
 	currentLevel: 1,
+	state: GameState.LOADED,
+	screenfaderIn: undefined,
+	screenfaderOut: undefined,
 
 	// Load a font
 	font: new ig.Font( 'media/04b03.font.png' ),
-
 
 	init: function() {
 		// Bind keys
@@ -48,11 +57,29 @@ MyGame = ig.Game.extend({
 	},
 
 	loadNextLevel: function() {
-		//console.log('loadNextLevel');
-		//ig.system.clear('#FFF');
 
-		this.currentLevel++; // TODO maximeren
-		this.loadLevel( window['Level' + this.currentLevel] );
+		if (this.state != GameState.LOADING) {
+			this.state = GameState.LOADING;
+
+			var self = this;
+			var speed = 4.0;
+			var color = { r: 255, g: 255, b: 255, a: 1 };
+			this.screenfaderIn = new ig.ScreenFader( {
+				fade: 'in',
+				speed: speed,
+				color: color,
+				callback: function() {
+					self.currentLevel++; // TODO maximeren
+					self.loadLevel( window['Level' + self.currentLevel] );
+					self.state = GameState.LOADED;
+				}
+			} );
+			this.screenfaderOut = new ig.ScreenFader( {
+				fade: 'out',
+				speed: speed,
+				color: color
+			} );
+		}
 	},
 
 	update: function() {
@@ -86,6 +113,13 @@ MyGame = ig.Game.extend({
 			sessionStorage.setItem('ambilightColor', lagHex);
 			_lastUpdated = now;
 		//}
+
+		if (this.state == GameState.LOADING && this.screenfaderIn) {
+	    	this.screenfaderIn.draw();
+		}
+		if (this.state == GameState.LOADED && this.screenfaderOut) {
+	    	this.screenfaderOut.draw();
+		}
 	},
 
     getHexForTimestamp: function(timestamp) {
