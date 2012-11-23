@@ -7,20 +7,22 @@ ig.module(
 .defines(function(){
 	
 EntityAnswerixi = ig.Entity.extend({
-	size: {x: 203, y: 304},
+	size: {x: 205, y: 317 - 14 * 2},
+	offset: {x: 0, y: 14},
 	
 	type: ig.Entity.TYPE.B, // Evil enemy group
 	checkAgainst: ig.Entity.TYPE.A, // Check against friendly
 	collides: ig.Entity.COLLIDES.FIXED,
 	
-	animSheet: new ig.AnimationSheet( 'media/answerixi.png', 203, 304 ),
+	animSheet: new ig.AnimationSheet( 'media/answerixi.png', 205, 317 ),
 	
 	
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
 
 		this.addAnim( 'idle', 1, [0] );
-        this.addAnim( 'death', 1, [0], true );
+		// TODO animatie versoepelen
+        this.addAnim( 'death', .3, [0, 1, 2, 3, 4, 5, 6, 7, 8], true );
 	},
 	
 	
@@ -31,12 +33,8 @@ EntityAnswerixi = ig.Entity.extend({
 		this.parent();
 	},
 
-    kill: function() {
-        if (this.anims.death.loopCount > 0) {
-            this.parent();
-        } else {
-            this.currentAnim = this.anims.death;
-        }
+    cleanup: function() {
+    	this.currentAnim = this.anims.death;
     },
 
 	handleMovementTrace: function( res ) {

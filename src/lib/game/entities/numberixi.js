@@ -13,7 +13,8 @@ NumberixiState = {
 };
 
 EntityNumberixi = ig.Entity.extend({
-	size: {x: 132, y: 122},
+	size: {x: 113, y: 92},
+	offset: {x: 10, y: 15},
 	originalMaxVel: {x: 100, y: 100},
 	returningMaxVel: {x: Infinity, y: Infinity},
 	maxVel: {x: 100, y: 100},
@@ -33,26 +34,31 @@ EntityNumberixi = ig.Entity.extend({
 	dragOffset: {x: undefined, y: undefined},
 	dragStartPos: {x: undefined, y: undefined},
 	dragReturnVelocity: {x: undefined, y: undefined},
+
+	number: 1,
 	
-	animSheet: new ig.AnimationSheet( 'media/numberixi.png', 132, 122 ),
+	animSheet: new ig.AnimationSheet( 'media/numberixi.png', 133, 122 ),
 	
 	
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
-		
-		this.addAnim( 'crawl', 0.2, [0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 2, 4, 4] );
-		this.addAnim( 'crawlflipped', 1, [1] );
+
+		number = this.number - 2; //temp
+		var offsetCalc = function(x) { return x + number * 6; };
+
+		this.addAnim( 'pause', 1, [0].map(offsetCalc));
+		this.addAnim( 'pauseflipped', 1, [1].map(offsetCalc));
+		this.addAnim( 'crawl', Math.random()*0.1+0.15, [0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 2, 4, 4].map(offsetCalc) );
+		this.addAnim( 'crawlflipped', Math.random()*0.1+0.15, [1, 1, 5, 5, 1, 1, 5, 5, 1, 1, 5, 5, 1, 3, 5, 5].map(offsetCalc) );
         this.addAnim( 'death', 1, [0], true);
+
+        this.maxWalkDistance = Math.random()*20+80;
 
 		this.startX = this.pos.x;
 	},
 
-    kill: function() {
-        if (this.anims.death.loopCount > 0) {
-            this.parent();
-        } else {
-            this.currentAnim = this.anims.death;
-        }
+    cleanup: function() {
+        this.currentAnim = this.anims.death;
     },
 	
 	update: function() {
@@ -62,6 +68,7 @@ EntityNumberixi = ig.Entity.extend({
 
 		if (this.state == NumberixiState.IDLE && ig.input.pressed('click') && this.inFocus()) {
 	        this.state = NumberixiState.DRAGGING;
+	        this.currentAnim = this.movingLeft ? this.anims.pause : this.anims.pauseflipped;
 	        this.dragStartPos = this.pos;
 	        this.dragOffset.x = ig.input.mouse.x - this.pos.x;
 	        this.dragOffset.y = ig.input.mouse.y - this.pos.y;
@@ -77,19 +84,18 @@ EntityNumberixi = ig.Entity.extend({
 	        this.dragReturnVelocity.y = dy * 1.5;
 	        this.maxVel = this.returningMaxVel;
 
-            // check monsters
-            var monsters = ig.game.getEntitiesByType('EntityAnswerixi');
-            var creature = this;
-            monsters.forEach(function(monster) {
-                var dx = Math.round(creature.pos.x - monster.pos.x);
-                var dy = Math.round(creature.pos.y - monster.pos.y);
-                var offBy = 50/2;
+            // check answerixis
+            var answerixis = ig.game.getEntitiesByType('EntityAnswerixi');
+            var numberixi = this;
+            answerixis.forEach(function(answerixi) {
+                var dx = Math.round(numberixi.pos.x - answerixi.pos.x);
+                var dy = Math.round(numberixi.pos.y - answerixi.pos.y);
+                var offBy = 50;
                 if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
-                    monster.kill();
-                    creature.kill();
+                    answerixi.cleanup();
+                    numberixi.cleanup();
                 }
             });
-
 
 	    }
 	    if (this.state == NumberixiState.RETURNING) {
@@ -172,7 +178,6 @@ EntityNumberixi = ig.Entity.extend({
 	},
 	
 	check: function( other ) {
-		//finish
 	}
 });
 

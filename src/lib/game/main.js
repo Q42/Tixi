@@ -6,7 +6,8 @@ ig.module(
 	'impact.font',
 
 	'game.entities.player',
-	'game.levels.1'
+	'game.levels.1',
+	'game.levels.2'
 )
 .defines(function(){
 
@@ -22,23 +23,11 @@ function _rgbToHex(r, g, b) {
 	return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
-function _hexForTimestamp( timestamp ) {
-	var frequency = 0.3
-	  , duration = 120*1000.0
-	  , offset = 32.0 * (timestamp % duration) / duration
-	  , red = Math.sin(frequency * offset + 0) * 127 + 128
-	  , green = Math.sin(frequency * offset + 2) * 127 + 128
-	  , blue  = Math.sin(frequency * offset + 4) * 127 + 128
-	  , hex = _rgbToHex(red, green, blue)
-
-	return hex;
-}
-
-
 
 MyGame = ig.Game.extend({
 
 	gravity: 300, // All entities are affected by this
+	currentLevel: 1,
 
 	// Load a font
 	font: new ig.Font( 'media/04b03.font.png' ),
@@ -56,6 +45,14 @@ MyGame = ig.Game.extend({
 
 		// Load the LevelTest as required above ('game.level.test')
 		this.loadLevel( Level1 );
+	},
+
+	loadNextLevel: function() {
+		//console.log('loadNextLevel');
+		//ig.system.clear('#FFF');
+
+		this.currentLevel++; // TODO maximeren
+		this.loadLevel( window['Level' + this.currentLevel] );
 	},
 
 	update: function() {
@@ -77,20 +74,46 @@ MyGame = ig.Game.extend({
 		this.parent();
 
 		var now = new Date().getTime()
-		  , hex = _hexForTimestamp( now )
+		  , hex = this.getHexForTimestamp( now )
 
 		ig.game.clearColor = '#' + hex;
 
 		// Stuur de ambilight kleur maar 1 keer per seconden.
 		//if( now - _lastUpdated > 1000) {
 			// Ambilight heeft wat lag...
-			var lagHex = _hexForTimestamp( now + 1500);
+			var lagHex = this.getHexForTimestamp( now + 1500);
 			//console.log( hex, lagHex );
 			sessionStorage.setItem('ambilightColor', lagHex);
 			_lastUpdated = now;
 		//}
-	}
-});
+	},
+
+    getHexForTimestamp: function(timestamp) {
+        scale = new chroma.ColorScale({
+             colors: [
+                '#B8684F', // 0u
+                '#4FB9C5', // 10u
+                '#DE7A75', // 20u
+                '#B8684F', // 20u
+            ],
+            positions: [
+                0.0,
+                10.0/24.0,
+                20.0/24.0,
+                1.0],
+            mode: 'hcl'
+        });
+
+        var duration = 40*1000.0
+            , offset = (timestamp % duration) / duration;
+
+        var color = scale.getColor(offset);
+
+        return color.hex().substring(1);
+    }
+
+
+    });
 
 
 
