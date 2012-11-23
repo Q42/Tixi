@@ -69,9 +69,11 @@ ig.module(
 	                var real_dist = Math.abs(this.pos.x - this.dest.x);
 	                if (real_dist <= dist) {
 	                    this.accel.x = 0;
+                    // Ga naar links.
 	                } else if (this.pos.x > this.dest.x && real_dist > 1) {
 	                    this.flip = true;
 	                    this.accel.x = -accel;
+                    // Ga naar rechts.
 	                } else if (this.pos.x < this.dest.x && real_dist > 1) {
 	                    this.flip = false;
 	                    this.accel.x = accel;
