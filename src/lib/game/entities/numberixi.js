@@ -13,7 +13,7 @@ NumberixiState = {
 };
 
 EntityNumberixi = ig.Entity.extend({
-	size: {x: 112, y: 92},
+	size: {x: 113, y: 92},
 	offset: {x: 10, y: 15},
 	originalMaxVel: {x: 100, y: 100},
 	returningMaxVel: {x: Infinity, y: Infinity},
@@ -34,16 +34,25 @@ EntityNumberixi = ig.Entity.extend({
 	dragOffset: {x: undefined, y: undefined},
 	dragStartPos: {x: undefined, y: undefined},
 	dragReturnVelocity: {x: undefined, y: undefined},
+
+	number: 1,
 	
-	animSheet: new ig.AnimationSheet( 'media/numberixi.png', 132, 122 ),
+	animSheet: new ig.AnimationSheet( 'media/numberixi.png', 133, 122 ),
 	
 	
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
-		
-		this.addAnim( 'crawl', 0.2, [0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 2, 4, 4] );
-		this.addAnim( 'crawlflipped', 0.2, [1, 1, 5, 5, 1, 1, 5, 5, 1, 1, 5, 5, 1, 3, 5, 5] );
+
+		number = this.number - 2; //temp
+		var offsetCalc = function(x) { return x + number * 6; };
+
+		this.addAnim( 'pause', 1, [0].map(offsetCalc));
+		this.addAnim( 'pauseflipped', 1, [1].map(offsetCalc));
+		this.addAnim( 'crawl', Math.random()*0.1+0.15, [0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 2, 4, 4].map(offsetCalc) );
+		this.addAnim( 'crawlflipped', Math.random()*0.1+0.15, [1, 1, 5, 5, 1, 1, 5, 5, 1, 1, 5, 5, 1, 3, 5, 5].map(offsetCalc) );
         this.addAnim( 'death', 1, [0], true);
+
+        this.maxWalkDistance = Math.random()*20+80;
 
 		this.startX = this.pos.x;
 	},
@@ -63,6 +72,7 @@ EntityNumberixi = ig.Entity.extend({
 
 		if (this.state == NumberixiState.IDLE && ig.input.pressed('click') && this.inFocus()) {
 	        this.state = NumberixiState.DRAGGING;
+	        this.currentAnim = this.movingLeft ? this.anims.pause : this.anims.pauseflipped;
 	        this.dragStartPos = this.pos;
 	        this.dragOffset.x = ig.input.mouse.x - this.pos.x;
 	        this.dragOffset.y = ig.input.mouse.y - this.pos.y;
