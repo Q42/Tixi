@@ -52,8 +52,8 @@ MyGame = ig.Game.extend({
 		this.currentLevel++; // TODO maximeren
 		this.loadLevel( window['Level' + this.currentLevel] );
 	},
-	
-	update: function() {		
+
+	update: function() {
 		// Update all entities and BackgroundMaps
 		this.parent();
 
@@ -88,22 +88,18 @@ MyGame = ig.Game.extend({
 
     getHexForTimestamp: function(timestamp) {
         scale = new chroma.ColorScale({
-            colors: [
-                '#0F2A30', // 0u
-                '#07151F', // 5u
-                '#0D68FE', // 8u
-                '#0C63FE', // 17u
-                '#1D1D33', // 20u
-                '#0F2A30' // 23u
+             colors: [
+                '#B8684F', // 0u
+                '#4FB9C5', // 10u
+                '#DE7A75', // 20u
+                '#B8684F', // 20u
             ],
             positions: [
                 0.0,
-                5.0/24.0,
-                8.0/24.0,
-                17.0/24.0,
+                10.0/24.0,
                 20.0/24.0,
                 1.0],
-            mode: 'rgb'
+            mode: 'hcl'
         });
 
         var duration = 40*1000.0
