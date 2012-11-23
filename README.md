@@ -10,4 +10,8 @@ Todo
 2. ???
 3. Profit
 
+Ambilight
+---------
 
+Press L to activate.
+Press L again to deactivate.
