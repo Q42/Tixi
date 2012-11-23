@@ -103,6 +103,11 @@ ig.module(
                     this.currentAnim = this.anims.pause;
 
                     if (width <= -10) {
+                        // Ambilight alert!
+                        console.info('Sending alert to ambilight.');
+                        var img = new Image();
+                        img.src = 'http://www.huelandsspoor.nl/api/effects/alert';
+
                         // TODO fade out
                         this.animSheet.width = this.originalAnimSheetWidth;
                         ig.game.loadNextLevel();
