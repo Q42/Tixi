@@ -43,27 +43,27 @@ ig.module(
                 this.addAnim('fall', 0.4, [0]);
             },
 
-            handleMovementTrace: function( res ) {
-                // Continue resolving the collision as normal
-                this.parent(res);
+            collideWith:function (other, axis) {
+                this.dest = this.pos;
+
+                this.parent(other, axis);
+
             },
-
-
             update:function () {
 
                 // move left or right
                 var accel = this.standing ? this.accelGround : this.accelAir;
                 if (ig.input.pressed('click')) {
-                	this.startTime = new Date();
+                    this.startTime = new Date();
                 }
                 if (ig.input.released('click') && new Date() - this.startTime < 300) {
                     this.dest = {
-                        x:ig.game.screen.x + ig.input.mouse.x - this.size.x/2,
+                        x:ig.game.screen.x + ig.input.mouse.x - this.size.x / 2,
                         y:ig.game.screen.y + ig.input.mouse.y
                     };
                 }
 
-                var dist = (this.vel.x*this.vel.x)/(2*this.friction.x);
+                var dist = (this.vel.x * this.vel.x) / (2 * this.friction.x);
                 var real_dist = Math.abs(this.pos.x - this.dest.x);
                 if (real_dist <= dist) {
                     this.accel.x = 0;
