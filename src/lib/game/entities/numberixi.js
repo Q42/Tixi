@@ -13,7 +13,7 @@ NumberixiState = {
 };
 
 EntityNumberixi = ig.Entity.extend({
-	size: {x: 105, y: 69},
+	size: {x: 132, y: 122},
 	originalMaxVel: {x: 100, y: 100},
 	returningMaxVel: {x: Infinity, y: Infinity},
 	maxVel: {x: 100, y: 100},
@@ -34,13 +34,13 @@ EntityNumberixi = ig.Entity.extend({
 	dragStartPos: {x: undefined, y: undefined},
 	dragReturnVelocity: {x: undefined, y: undefined},
 	
-	animSheet: new ig.AnimationSheet( 'media/numberixi.png', 105, 69 ),
+	animSheet: new ig.AnimationSheet( 'media/numberixi.png', 132, 122 ),
 	
 	
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
 		
-		this.addAnim( 'crawl', 1, [0] );
+		this.addAnim( 'crawl', 0.2, [0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 2, 4, 4] );
 		this.addAnim( 'crawlflipped', 1, [1] );
         this.addAnim( 'death', 1, [0], true);
 
