@@ -6,7 +6,7 @@ ig.module(
 	'impact.font',
 	
 	'game.entities.player',
-	'game.entities.spike',
+	'game.entities.flag',
 	'game.levels.level_1'
 )
 .defines(function(){
