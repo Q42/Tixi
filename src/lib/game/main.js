@@ -24,6 +24,10 @@ MyGame = ig.Game.extend({
 		ig.input.bind( ig.KEY.LEFT_ARROW, 'left' );
 		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
 		ig.input.bind(ig.KEY.MOUSE1, 'click');
+
+		ig.music.add( 'media/DST-ByTheField.mp3' );
+		ig.music.volume = 1;
+		ig.music.play();
 		
 		// Load the LevelTest as required above ('game.level.test')
 		this.loadLevel( LevelLevel_1 );
