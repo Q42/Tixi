@@ -7,14 +7,14 @@ ig.module(
 .defines(function(){
 	
 EntityOperatorixi = ig.Entity.extend({
-	size: {x: 340, y: 277},
-	//offset: {x: 57, y: 17},
+	size: {x: 340 - 57*2, y: 227 - 17*2},
+	offset: {x: 57, y: 17},
 	
 	type: ig.Entity.TYPE.B, // Evil enemy group
 	checkAgainst: ig.Entity.TYPE.A, // Check against friendly
-	collides: ig.Entity.COLLIDES.FIXED,
+	collides: ig.Entity.COLLIDES.NEVER,
 	
-	animSheet: new ig.AnimationSheet( 'media/operatorixi.png', 340, 277 ),
+	animSheet: new ig.AnimationSheet( 'media/operatorixi.png', 340, 227 ),
 	
 	
 	init: function( x, y, settings ) {
