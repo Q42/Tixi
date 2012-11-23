@@ -14,7 +14,7 @@
 			padding: 0;
 			font-size: 12pt;
 		}
-		
+
 		#canvas {
 			position: absolute;
 			left: 0;
@@ -28,6 +28,42 @@
 
 	<script type="text/javascript" src="lib/impact/impact.js"></script>
 	<script type="text/javascript" src="lib/game/main.js"></script>
+	<script>
+		(function() {
+
+			var active = false
+			  , interval
+
+			window.onkeypress = function( e ) {
+				if( e.charCode != 108 ) {
+					return;
+				}
+
+				if( !active ) {
+					console.info('Activating ambilight.')
+					active = true;
+					interval = setInterval( refreshLights, 3000 );
+				} else {
+					console.info('Deactivating ambilight.')
+					active = false;
+					clearInterval( interval );
+				}
+			}
+
+			function refreshLights() {
+				var img = new Image()
+				  , color = sessionStorage.getItem('ambilightColor')
+
+				if( color ) {
+					console.info('Setting ambilight to', color);
+					//img.src = 'http://www.huelandsspoor.nl/api/lamps/setcolor?lamps=&color=' + color;
+				} else {
+					console.warn('No ambilight color found!');
+				}
+			}
+
+		})();
+	</script>
 </head>
 <body>
 	<canvas id="canvas"></canvas>
