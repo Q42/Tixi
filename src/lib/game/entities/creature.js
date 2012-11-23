@@ -13,7 +13,7 @@ CreatureState = {
 };
 
 EntityCreature = ig.Entity.extend({
-	size: {x: 80, y: 60},
+	size: {x: 105, y: 69},
 	originalMaxVel: {x: 100, y: 100},
 	returningMaxVel: {x: Infinity, y: Infinity},
 	maxVel: {x: 100, y: 100},
@@ -34,14 +34,14 @@ EntityCreature = ig.Entity.extend({
 	dragStartPos: {x: undefined, y: undefined},
 	dragReturnVelocity: {x: undefined, y: undefined},
 	
-	animSheet: new ig.AnimationSheet( 'media/creature_2.png', 80, 60 ),
+	animSheet: new ig.AnimationSheet( 'media/creature.png', 105, 69 ),
 	
 	
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
 		
 		this.addAnim( 'crawl', 1, [0] );
-		this.addAnim( 'crawlflipped', 1, [1] );
+		this.addAnim( 'crawlflipped', 1, [0] );
 
 		this.startX = this.pos.x;
 	},
@@ -61,8 +61,8 @@ EntityCreature = ig.Entity.extend({
 	    	this.gravityFactor = 0;
 	        var dx = this.dragStartPos.x - this.pos.x;
 	        var dy = this.dragStartPos.y - this.pos.y;
-	        this.dragReturnVelocity.x = dx;
-	        this.dragReturnVelocity.y = dy;
+	        this.dragReturnVelocity.x = dx * 1.5;
+	        this.dragReturnVelocity.y = dy * 1.5;
 	        this.maxVel = this.returningMaxVel;
 	    }
 	    if (this.state == CreatureState.RETURNING) {
@@ -126,18 +126,20 @@ EntityCreature = ig.Entity.extend({
 	    if (this.state == CreatureState.DRAGGING || this.state == CreatureState.RETURNING) {
 	        res.pos.x = this.pos.x + this.vel.x * ig.system.tick;
         	res.pos.y = this.pos.y + this.vel.y * ig.system.tick;
-	        if (this.dragReturnVelocity.x < 0 && res.pos.x < this.dragStartPos.x) {
-	        	res.pos.x = this.dragStartPos.x;
-	        }
-	        else if (this.dragReturnVelocity.x > 0 && res.pos.x > this.dragStartPos.x) {
-	        	res.pos.x = this.dragStartPos.x;
-	        }
-	        if (this.dragReturnVelocity.y < 0 && res.pos.y < this.dragStartPos.y) {
-	        	res.pos.y = this.dragStartPos.y;
-	        }
-	        else if (this.dragReturnVelocity.y > 0 && res.pos.y > this.dragStartPos.y) {
-	        	res.pos.y = this.dragStartPos.y;
-	        }
+	        if (this.state == CreatureState.RETURNING) {
+		        if (this.dragReturnVelocity.x < 0 && res.pos.x < this.dragStartPos.x) {
+		        	res.pos.x = this.dragStartPos.x;
+		        }
+		        else if (this.dragReturnVelocity.x > 0 && res.pos.x > this.dragStartPos.x) {
+		        	res.pos.x = this.dragStartPos.x;
+		        }
+		        if (this.dragReturnVelocity.y < 0 && res.pos.y < this.dragStartPos.y) {
+		        	res.pos.y = this.dragStartPos.y;
+		        }
+		        else if (this.dragReturnVelocity.y > 0 && res.pos.y > this.dragStartPos.y) {
+		        	res.pos.y = this.dragStartPos.y;
+		        }
+		    }
 	    }
 	    this.parent( res );
 	},

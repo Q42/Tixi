@@ -10,8 +10,8 @@ ig.module(
 
             // The players (collision) size is a bit smaller than the animation
             // frames, so we have to move the collision box a bit (offset)
-            size:{x:50, y:84},
-            offset:{x:5, y:0},
+            size:{x:124, y:174},
+            offset:{x:0, y:0},
 
             maxVel:{x:200, y:200},
             friction:{x:600, y:0},
@@ -20,7 +20,7 @@ ig.module(
             checkAgainst:ig.Entity.TYPE.NONE,
             collides:ig.Entity.COLLIDES.PASSIVE,
 
-            animSheet:new ig.AnimationSheet('media/character1.png', 60, 84),
+            animSheet:new ig.AnimationSheet('media/char.png', 123, 174),
 
 
             // These are our own properties. They are not defined in the base
@@ -49,6 +49,9 @@ ig.module(
                 // move left or right
                 var accel = this.standing ? this.accelGround : this.accelAir;
                 if (ig.input.pressed('click')) {
+                	this.startTime = new Date();
+                }
+                if (ig.input.released('click') && new Date() - this.startTime < 300) {
                     this.dest = {
                         x:ig.game.screen.x + ig.input.mouse.x - this.size.x/2,
                         y:ig.game.screen.y + ig.input.mouse.y

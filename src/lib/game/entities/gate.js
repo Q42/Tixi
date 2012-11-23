@@ -7,13 +7,13 @@ ig.module(
 .defines(function(){
 	
 EntityGate = ig.Entity.extend({
-	size: {x: 63, y: 142},
+	size: {x: 203, y: 304},
 	
 	type: ig.Entity.TYPE.B, // Evil enemy group
 	checkAgainst: ig.Entity.TYPE.A, // Check against friendly
 	collides: ig.Entity.COLLIDES.FIXED,
 	
-	animSheet: new ig.AnimationSheet( 'media/gate.png', 63, 142 ),
+	animSheet: new ig.AnimationSheet( 'media/monster.png', 203, 304 ),
 	
 	
 	init: function( x, y, settings ) {
