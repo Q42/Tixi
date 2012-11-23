@@ -34,13 +34,15 @@ MyGame = ig.Game.extend({
 	update: function() {		
 		// Update all entities and BackgroundMaps
 		this.parent();
-		
+
 		// screen follows the player
+		/*
 		var player = this.getEntitiesByType( EntityPlayer )[0];
 		if( player ) {
 			this.screen.x = player.pos.x - ig.system.width/2;
 			this.screen.y = player.pos.y - ig.system.height/2;
 		}
+		*/
 	},
 	
 	draw: function() {
