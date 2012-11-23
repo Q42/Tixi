@@ -34,6 +34,8 @@ EntityGate = ig.Entity.extend({
     kill: function() {
         if (this.anims.death.loopCount > 0) {
             this.parent();
+        } else {
+            this.currentAnim = this.anims.death;
         }
     },
 
