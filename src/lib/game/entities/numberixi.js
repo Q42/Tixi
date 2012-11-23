@@ -16,10 +16,10 @@ EntityNumberixi = ig.Entity.extend({
 	size: {x: 113, y: 92},
 	offset: {x: 10, y: 15},
 	originalMaxVel: {x: 100, y: 100},
-	returningMaxVel: {x: Infinity, y: Infinity},
+	returningMaxVel: {x: 500, y: 500},
 	maxVel: {x: 100, y: 100},
 	friction: {x: 150, y: 0},
-	
+
 	type: ig.Entity.TYPE.B, // Evil enemy group
 	checkAgainst: ig.Entity.TYPE.A, // Check against friendly
 	collides: ig.Entity.COLLIDES.PASSIVE,
@@ -36,10 +36,10 @@ EntityNumberixi = ig.Entity.extend({
 	dragReturnVelocity: {x: undefined, y: undefined},
 
 	number: 1,
-	
+
 	animSheet: new ig.AnimationSheet( 'media/numberixi.png', 133, 122 ),
-	
-	
+
+
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
 
@@ -60,7 +60,7 @@ EntityNumberixi = ig.Entity.extend({
     cleanup: function() {
         this.currentAnim = this.anims.death;
     },
-	
+
 	update: function() {
         if (this.anims.death.loopCount > 0) {
             this.kill();
@@ -77,7 +77,6 @@ EntityNumberixi = ig.Entity.extend({
 	    // TODO voor Tom als we buiten het scherm bewegen, releasen
 	    if (this.state == NumberixiState.DRAGGING && ig.input.released('click')) {
 	        this.state = NumberixiState.RETURNING;
-	    	this.gravityFactor = 0;
 	        var dx = this.dragStartPos.x - this.pos.x;
 	        var dy = this.dragStartPos.y - this.pos.y;
 	        this.dragReturnVelocity.x = dx * 1.5;
@@ -107,11 +106,10 @@ EntityNumberixi = ig.Entity.extend({
 				return;
 			}
 
-	        this.vel.x = originalXPosReached ? 0 : this.dragReturnVelocity.x;
-	        this.vel.y = originalYPosReached ? 0 : this.dragReturnVelocity.y;
+	        this.accel.x = originalXPosReached ? 0 : this.dragReturnVelocity.x;
+	        this.accel.y = originalYPosReached ? 0 : this.dragReturnVelocity.y;
 	    }
 	    if (this.state == NumberixiState.IDLE) {
-	    	this.gravityFactor = 1;
 	        this.collides = ig.Entity.COLLIDES.PASSIVE;
 	        this.maxVel = this.originalMaxVel;
 	    }
@@ -143,17 +141,17 @@ EntityNumberixi = ig.Entity.extend({
 			this.movingLeft = false;
 		if (this.pos.x > maxX && !this.movingLeft)
 			this.movingLeft = true;
-		
+
 		var xdir = this.movingLeft ? -1 : 1;
 		this.vel.x = this.speed * xdir;
 		this.currentAnim = this.movingLeft ? this.anims.crawl : this.anims.crawlflipped;
-	},	
-	
+	},
+
 	collideWith: function( other, axis ) {
 		this.parent( other, axis );
 
 		this.movingLeft = !this.movingLeft;
-	},	
+	},
 
 	handleMovementTrace: function( res ) {
 	    if (this.state == NumberixiState.DRAGGING || this.state == NumberixiState.RETURNING) {
@@ -176,7 +174,7 @@ EntityNumberixi = ig.Entity.extend({
 	    }
 	    this.parent( res );
 	},
-	
+
 	check: function( other ) {
 	}
 });
