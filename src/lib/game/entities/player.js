@@ -43,6 +43,11 @@ ig.module(
                 this.addAnim('fall', 0.4, [0]);
             },
 
+            handleMovementTrace: function( res ) {
+                // Continue resolving the collision as normal
+                this.parent(res);
+            },
+
 
             update:function () {
 
@@ -84,10 +89,6 @@ ig.module(
                 this.parent();
             }
         });
-
-        TargetEntity = ig.Entity.extend({
-
-        })
 
 
     });
