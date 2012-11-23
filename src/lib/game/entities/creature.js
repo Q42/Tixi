@@ -64,6 +64,21 @@ EntityCreature = ig.Entity.extend({
 	        this.dragReturnVelocity.x = dx * 1.5;
 	        this.dragReturnVelocity.y = dy * 1.5;
 	        this.maxVel = this.returningMaxVel;
+
+            // check monsters
+            var monsters = ig.game.getEntitiesByType('EntityGate');
+            var creature = this;
+            monsters.forEach(function(monster) {
+                var dx = Math.round(creature.pos.x - monster.pos.x);
+                var dy = Math.round(creature.pos.y - monster.pos.y);
+                var offBy = 50/2;
+                if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
+                    monster.kill();
+                    creature.kill();
+                }
+            });
+
+
 	    }
 	    if (this.state == CreatureState.RETURNING) {
 	    	var originalXPosReached = (this.dragReturnVelocity.x < 0 && this.pos.x <= this.dragStartPos.x) || (this.dragReturnVelocity.x >= 0 && this.pos.x >= this.dragStartPos.x);
@@ -86,18 +101,6 @@ EntityCreature = ig.Entity.extend({
 	    if (this.state == CreatureState.DRAGGING) {
 	    	this.pos.x = ig.input.mouse.x - this.dragOffset.x;
 	    	this.pos.y = ig.input.mouse.y - this.dragOffset.y;
-
-            var monsters = ig.game.getEntitiesByType('EntityGate');
-            var creature = this;
-            monsters.forEach(function(monster) {
-                var dx = Math.round(creature.pos.x - monster.pos.x);
-                var dy = Math.round(creature.pos.y - monster.pos.y);
-                if (dx > 45 && dx < 56 && dy > 50 && dy < 60) {
-                    monster.kill();
-                    creature.kill();
-                }
-            });
-
 	    }
 
 	    if (this.state == CreatureState.IDLE) {
