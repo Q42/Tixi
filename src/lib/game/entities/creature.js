@@ -41,13 +41,25 @@ EntityCreature = ig.Entity.extend({
 		this.parent( x, y, settings );
 		
 		this.addAnim( 'crawl', 1, [0] );
+        this.addAnim( 'death', 1, [0], true);
 		this.addAnim( 'crawlflipped', 1, [0] );
 
 		this.startX = this.pos.x;
 	},
-	
+
+    kill: function() {
+        if (this.anims.death.loopCount > 0) {
+            this.parent();
+        } else {
+            this.currentAnim = this.anims.death;
+        }
+    },
 	
 	update: function() {
+        if (this.anims.death.loopCount > 0) {
+            this.kill();
+        }
+
 		if (this.state == CreatureState.IDLE && ig.input.pressed('click') && this.inFocus()) {
 	        this.state = CreatureState.DRAGGING;
 	        this.dragStartPos = this.pos;

@@ -29,39 +29,29 @@ ig.module(
 
             animSheet:new ig.AnimationSheet('media/char.png', 123, 174),
 
-
-            // These are our own properties. They are not defined in the base
-            // ig.Entity class. We just use them internally for the Player
             accelGround:400,
-            accelAir:200,
-            jump:200,
+            accelLadder:200,
             health:10,
             flip:false,
 
             init:function (x, y, settings) {
                 this.parent(x, y, settings);
                 this.dest = {x:x, y:y};
-                this.queue = [];
 
                 // Add the animations
                 this.addAnim('idle', .5, [0, 1]);
                 this.addAnim('run', 0.07, [0, 1]);
-                this.addAnim('jump', 1, [0]);
-                this.addAnim('fall', 0.4, [0]);
             },
 
             collideWith:function (other, axis) {
-                this.dest = this.pos;
-
+                this.dest = this.pos; // Stop moving
                 this.parent(other, axis);
-
             },
             update:function () {
-
             	if (this.state == PlayerState.PLAYING)
             	{
 	                // move left or right
-	                var accel = this.standing ? this.accelGround : this.accelAir;
+	                var accel = this.standing ? this.accelGround : this.accelLadder;
 	                if (ig.input.pressed('click')) {
 	                    this.startTime = new Date();
 	                }
@@ -72,6 +62,7 @@ ig.module(
 	                    };
 	                }
 
+                    // Calculate distance to target destination
 	                var dist = (this.vel.x * this.vel.x) / (2 * this.friction.x);
 	                var real_dist = Math.abs(this.pos.x - this.dest.x);
 	                if (real_dist <= dist) {
@@ -84,13 +75,13 @@ ig.module(
 	                    this.accel.x = accel;
 	                }
 
+                    // Update animation
 	                if (this.vel.x == 0 && this.accel.x == 0) {
 	                    this.currentAnim = this.anims.idle;
 	                    this.dest = this.pos;
 	                } else {
 	                    this.currentAnim = this.anims.run;
 	                }
-
 
 	                this.currentAnim.flip.x = this.flip;
 	            }
