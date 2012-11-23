@@ -33,7 +33,11 @@ EntityFlag = ig.Entity.extend({
 	},	
 	
 	check: function( other ) {
-		//finish
+		var isPlayer =  other instanceof EntityPlayer;
+
+		if (!isPlayer) return;
+
+		other.state = PlayerState.WINNING;
 	}
 });
 
