@@ -6,7 +6,8 @@ ig.module(
 	'impact.font',
 
 	'game.entities.player',
-	'game.levels.1'
+	'game.levels.1',
+	'game.levels.2'
 )
 .defines(function(){
 
@@ -39,6 +40,7 @@ function _hexForTimestamp( timestamp ) {
 MyGame = ig.Game.extend({
 
 	gravity: 300, // All entities are affected by this
+	currentLevel: 1,
 
 	// Load a font
 	font: new ig.Font( 'media/04b03.font.png' ),
@@ -58,7 +60,12 @@ MyGame = ig.Game.extend({
 		this.loadLevel( Level1 );
 	},
 
-	update: function() {
+	loadNextLevel: function() {
+		this.currentLevel++; // TODO maximeren
+		this.loadLevel( window['Level' + this.currentLevel] );
+	},
+	
+	update: function() {		
 		// Update all entities and BackgroundMaps
 		this.parent();
 

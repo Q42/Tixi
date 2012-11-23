@@ -28,6 +28,7 @@ ig.module(
             state: PlayerState.PLAYING,
             exitixi: undefined,
 
+            originalAnimSheetWidth: 123,
             animSheet:new ig.AnimationSheet('media/player.png', 123, 174),
 
             accelGround:400,
@@ -40,7 +41,7 @@ ig.module(
 
                 // Add the animations
                 this.addAnim('pause', 2, [0]);
-                this.addAnim('idle', .5, [0, 1]);
+                this.addAnim('idle', .3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
                 this.addAnim('run', 0.07, [0, 1]);
             },
 
@@ -100,6 +101,13 @@ ig.module(
 
                     this.animSheet.width = width;
                     this.currentAnim = this.anims.pause;
+
+                    if (width <= -10) {
+                        // TODO fade out
+                        this.animSheet.width = this.originalAnimSheetWidth;
+                        ig.game.loadNextLevel();
+                        // TODO fade in
+                    }
                 }
 
                 // move!
