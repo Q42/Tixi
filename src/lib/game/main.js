@@ -6,8 +6,8 @@ ig.module(
 	'impact.font',
 	
 	'game.entities.player',
-	'game.entities.spike',
-	'game.levels.test'
+	'game.entities.flag',
+	'game.levels.level_1'
 )
 .defines(function(){
 
@@ -28,7 +28,7 @@ MyGame = ig.Game.extend({
 		ig.input.bind( ig.KEY.C, 'shoot' );
 		
 		// Load the LevelTest as required above ('game.level.test')
-		this.loadLevel( LevelTest );
+		this.loadLevel( LevelLevel_1 );
 	},
 	
 	update: function() {		
@@ -54,6 +54,6 @@ MyGame = ig.Game.extend({
 
 // Start the Game with 60fps, a resolution of 240x160, scaled
 // up by a factor of 2
-ig.main( '#canvas', MyGame, 60, 1024/2, 748/2, 2 );
+ig.main( '#canvas', MyGame, 60, 1024, 748, 1 );
 
 });
