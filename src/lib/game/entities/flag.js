@@ -7,13 +7,13 @@ ig.module(
 .defines(function(){
 	
 EntityFlag = ig.Entity.extend({
-	size: {x: 42, y: 60},
+	size: {x: 105, y: 183},
 	
 	type: ig.Entity.TYPE.B, // Evil enemy group
 	checkAgainst: ig.Entity.TYPE.A, // Check against friendly
 	collides: ig.Entity.COLLIDES.PASSIVE,
 	
-	animSheet: new ig.AnimationSheet( 'media/flag.png', 42, 60 ),
+	animSheet: new ig.AnimationSheet( 'media/door.png', 105, 183 ),
 	
 	
 	init: function( x, y, settings ) {
