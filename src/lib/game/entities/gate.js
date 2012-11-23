@@ -20,14 +20,23 @@ EntityGate = ig.Entity.extend({
 		this.parent( x, y, settings );
 
 		this.addAnim( 'idle', 1, [0] );
+        this.addAnim( 'death', 1, [0], true );
 	},
 	
 	
 	update: function() {
+        if (this.anims.death.loopCount > 0) {
+            this.kill();
+        }
 		this.parent();
 	},
-	
-	
+
+    kill: function() {
+        if (this.anims.death.loopCount > 0) {
+            this.parent();
+        }
+    },
+
 	handleMovementTrace: function( res ) {
 		this.parent( res );
 	},	
