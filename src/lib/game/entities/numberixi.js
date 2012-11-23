@@ -66,64 +66,73 @@ EntityNumberixi = ig.Entity.extend({
             this.kill();
         }
 
-		if (this.state == NumberixiState.IDLE && ig.input.pressed('click') && this.inFocus()) {
-	        this.state = NumberixiState.DRAGGING;
-	        this.currentAnim = this.movingLeft ? this.anims.pause : this.anims.pauseflipped;
-	        this.dragStartPos = this.pos;
-	        this.dragOffset.x = ig.input.mouse.x - this.pos.x;
-	        this.dragOffset.y = ig.input.mouse.y - this.pos.y;
-	        this.collides = ig.Entity.COLLIDES.NEVER;
-	    }
-	    // TODO voor Tom als we buiten het scherm bewegen, releasen
-	    if (this.state == NumberixiState.DRAGGING && ig.input.released('click')) {
-	        this.state = NumberixiState.RETURNING;
-	    	this.gravityFactor = 0;
-	        var dx = this.dragStartPos.x - this.pos.x;
-	        var dy = this.dragStartPos.y - this.pos.y;
-	        this.dragReturnVelocity.x = dx * 1.5;
-	        this.dragReturnVelocity.y = dy * 1.5;
-	        this.maxVel = this.returningMaxVel;
+        switch (this.state) {
+        	case NumberixiState.IDLE:
+				if (ig.input.pressed('click') && this.inFocus()) {
+			        this.state = NumberixiState.DRAGGING;
+			        this.currentAnim = this.movingLeft ? this.anims.pause : this.anims.pauseflipped;
+			        this.dragStartPos = this.pos;
+			        this.dragOffset.x = ig.input.mouse.x - this.pos.x;
+			        this.dragOffset.y = ig.input.mouse.y - this.pos.y;
+			        this.collides = ig.Entity.COLLIDES.NEVER;
+			    }
+			    else
+			    {
+			    	this.gravityFactor = 1;
+			        this.collides = ig.Entity.COLLIDES.PASSIVE;
+			        this.maxVel = this.originalMaxVel;
+					this.autoWalk();
+				}
 
-            // check answerixis
-            var answerixis = ig.game.getEntitiesByType('EntityAnswerixi');
-            var numberixi = this;
-            answerixis.forEach(function(answerixi) {
-                var dx = Math.round(numberixi.pos.x - answerixi.pos.x);
-                var dy = Math.round(numberixi.pos.y - answerixi.pos.y);
-                var offBy = 50;
-                if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
-                    answerixi.cleanup();
-                    numberixi.cleanup();
-                }
-            });
+        		break;
 
-	    }
-	    if (this.state == NumberixiState.RETURNING) {
-	    	var originalXPosReached = (this.dragReturnVelocity.x < 0 && this.pos.x <= this.dragStartPos.x) || (this.dragReturnVelocity.x >= 0 && this.pos.x >= this.dragStartPos.x);
-			var originalYPosReached = (this.dragReturnVelocity.y < 0 && this.pos.y <= this.dragStartPos.y) || (this.dragReturnVelocity.y >= 0 && this.pos.y >= this.dragStartPos.y);
+        	case NumberixiState.DRAGGING:
+        		// TODO voor Tom als we buiten het scherm bewegen, releasen
+			    if (ig.input.released('click')) {
+			        this.state = NumberixiState.RETURNING;
+			    	this.gravityFactor = 0;
+			        var dx = this.dragStartPos.x - this.pos.x;
+			        var dy = this.dragStartPos.y - this.pos.y;
+			        this.dragReturnVelocity.x = dx * 1.5;
+			        this.dragReturnVelocity.y = dy * 1.5;
+			        this.maxVel = this.returningMaxVel;
 
-			if (originalXPosReached && originalYPosReached) {
-				this.state = NumberixiState.IDLE;
-				return;
-			}
+		            // check answerixis
+		            var answerixis = ig.game.getEntitiesByType('EntityAnswerixi');
+		            var numberixi = this;
+		            answerixis.forEach(function(answerixi) {
+		                var dx = Math.round(numberixi.pos.x - answerixi.pos.x);
+		                var dy = Math.round(numberixi.pos.y - answerixi.pos.y);
+		                var offBy = 50;
+		                if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
+		                    answerixi.cleanup();
+		                    numberixi.cleanup();
+		                }
+		            });
 
-	        this.vel.x = originalXPosReached ? 0 : this.dragReturnVelocity.x;
-	        this.vel.y = originalYPosReached ? 0 : this.dragReturnVelocity.y;
-	    }
-	    if (this.state == NumberixiState.IDLE) {
-	    	this.gravityFactor = 1;
-	        this.collides = ig.Entity.COLLIDES.PASSIVE;
-	        this.maxVel = this.originalMaxVel;
-	    }
+			    }
 
-	    if (this.state == NumberixiState.DRAGGING) {
-	    	this.pos.x = ig.input.mouse.x - this.dragOffset.x;
-	    	this.pos.y = ig.input.mouse.y - this.dragOffset.y;
-	    }
 
-	    if (this.state == NumberixiState.IDLE) {
-			this.autoWalk();
-		}
+		    	this.pos.x = ig.input.mouse.x - this.dragOffset.x;
+		    	this.pos.y = ig.input.mouse.y - this.dragOffset.y;
+
+			    break;
+
+			case NumberixiState.RETURNING:
+
+		    	var originalXPosReached = (this.dragReturnVelocity.x < 0 && this.pos.x <= this.dragStartPos.x) || (this.dragReturnVelocity.x >= 0 && this.pos.x >= this.dragStartPos.x);
+				var originalYPosReached = (this.dragReturnVelocity.y < 0 && this.pos.y <= this.dragStartPos.y) || (this.dragReturnVelocity.y >= 0 && this.pos.y >= this.dragStartPos.y);
+
+				if (originalXPosReached && originalYPosReached) {
+					this.state = NumberixiState.IDLE;
+					return;
+				}
+
+		        this.vel.x = originalXPosReached ? 0 : this.dragReturnVelocity.x;
+		        this.vel.y = originalYPosReached ? 0 : this.dragReturnVelocity.y;
+
+		        break;
+        }
 
 		this.parent();
 	},
