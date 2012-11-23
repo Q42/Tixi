@@ -1,18 +1,18 @@
 ig.module(
-	'game.entities.creature'
+	'game.entities.numberixi'
 )
 .requires(
 	'impact.entity'
 )
 .defines(function(){
 
-CreatureState = {
+NumberixiState = {
 	IDLE: 'IDLE',
 	DRAGGING: 'DRAGGING',
 	RETURNING: 'RETURNING'
 };
 
-EntityCreature = ig.Entity.extend({
+EntityNumberixi = ig.Entity.extend({
 	size: {x: 105, y: 69},
 	originalMaxVel: {x: 100, y: 100},
 	returningMaxVel: {x: Infinity, y: Infinity},
@@ -29,12 +29,12 @@ EntityCreature = ig.Entity.extend({
 	startX: undefined,
 	maxWalkDistance: 100,
 
-	state: CreatureState.IDLE,
+	state: NumberixiState.IDLE,
 	dragOffset: {x: undefined, y: undefined},
 	dragStartPos: {x: undefined, y: undefined},
 	dragReturnVelocity: {x: undefined, y: undefined},
 	
-	animSheet: new ig.AnimationSheet( 'media/creature.png', 105, 69 ),
+	animSheet: new ig.AnimationSheet( 'media/numberixi.png', 105, 69 ),
 	
 	
 	init: function( x, y, settings ) {
@@ -60,16 +60,16 @@ EntityCreature = ig.Entity.extend({
             this.kill();
         }
 
-		if (this.state == CreatureState.IDLE && ig.input.pressed('click') && this.inFocus()) {
-	        this.state = CreatureState.DRAGGING;
+		if (this.state == NumberixiState.IDLE && ig.input.pressed('click') && this.inFocus()) {
+	        this.state = NumberixiState.DRAGGING;
 	        this.dragStartPos = this.pos;
 	        this.dragOffset.x = ig.input.mouse.x - this.pos.x;
 	        this.dragOffset.y = ig.input.mouse.y - this.pos.y;
 	        this.collides = ig.Entity.COLLIDES.NEVER;
 	    }
 	    // TODO voor Tom als we buiten het scherm bewegen, releasen
-	    if (this.state == CreatureState.DRAGGING && ig.input.released('click')) {
-	        this.state = CreatureState.RETURNING;
+	    if (this.state == NumberixiState.DRAGGING && ig.input.released('click')) {
+	        this.state = NumberixiState.RETURNING;
 	    	this.gravityFactor = 0;
 	        var dx = this.dragStartPos.x - this.pos.x;
 	        var dy = this.dragStartPos.y - this.pos.y;
@@ -78,7 +78,7 @@ EntityCreature = ig.Entity.extend({
 	        this.maxVel = this.returningMaxVel;
 
             // check monsters
-            var monsters = ig.game.getEntitiesByType('EntityGate');
+            var monsters = ig.game.getEntitiesByType('EntityAnswerixi');
             var creature = this;
             monsters.forEach(function(monster) {
                 var dx = Math.round(creature.pos.x - monster.pos.x);
@@ -92,30 +92,30 @@ EntityCreature = ig.Entity.extend({
 
 
 	    }
-	    if (this.state == CreatureState.RETURNING) {
+	    if (this.state == NumberixiState.RETURNING) {
 	    	var originalXPosReached = (this.dragReturnVelocity.x < 0 && this.pos.x <= this.dragStartPos.x) || (this.dragReturnVelocity.x >= 0 && this.pos.x >= this.dragStartPos.x);
 			var originalYPosReached = (this.dragReturnVelocity.y < 0 && this.pos.y <= this.dragStartPos.y) || (this.dragReturnVelocity.y >= 0 && this.pos.y >= this.dragStartPos.y);
 
 			if (originalXPosReached && originalYPosReached) {
-				this.state = CreatureState.IDLE;
+				this.state = NumberixiState.IDLE;
 				return;
 			}
 
 	        this.vel.x = originalXPosReached ? 0 : this.dragReturnVelocity.x;
 	        this.vel.y = originalYPosReached ? 0 : this.dragReturnVelocity.y;
 	    }
-	    if (this.state == CreatureState.IDLE) {
+	    if (this.state == NumberixiState.IDLE) {
 	    	this.gravityFactor = 1;
 	        this.collides = ig.Entity.COLLIDES.PASSIVE;
 	        this.maxVel = this.originalMaxVel;
 	    }
 
-	    if (this.state == CreatureState.DRAGGING) {
+	    if (this.state == NumberixiState.DRAGGING) {
 	    	this.pos.x = ig.input.mouse.x - this.dragOffset.x;
 	    	this.pos.y = ig.input.mouse.y - this.dragOffset.y;
 	    }
 
-	    if (this.state == CreatureState.IDLE) {
+	    if (this.state == NumberixiState.IDLE) {
 			this.autoWalk();
 		}
 
@@ -150,10 +150,10 @@ EntityCreature = ig.Entity.extend({
 	},	
 
 	handleMovementTrace: function( res ) {
-	    if (this.state == CreatureState.DRAGGING || this.state == CreatureState.RETURNING) {
+	    if (this.state == NumberixiState.DRAGGING || this.state == NumberixiState.RETURNING) {
 	        res.pos.x = this.pos.x + this.vel.x * ig.system.tick;
         	res.pos.y = this.pos.y + this.vel.y * ig.system.tick;
-	        if (this.state == CreatureState.RETURNING) {
+	        if (this.state == NumberixiState.RETURNING) {
 		        if (this.dragReturnVelocity.x < 0 && res.pos.x < this.dragStartPos.x) {
 		        	res.pos.x = this.dragStartPos.x;
 		        }

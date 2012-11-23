@@ -6,8 +6,7 @@ ig.module(
 	'impact.font',
 	
 	'game.entities.player',
-	'game.entities.flag',
-	'game.levels.level_1'
+	'game.levels.1'
 )
 .defines(function(){
 
@@ -30,7 +29,7 @@ MyGame = ig.Game.extend({
 		ig.music.play();
 		
 		// Load the LevelTest as required above ('game.level.test')
-		this.loadLevel( LevelLevel_1 );
+		this.loadLevel( Level1 );
 	},
 	
 	update: function() {		

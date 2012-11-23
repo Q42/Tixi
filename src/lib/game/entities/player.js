@@ -27,7 +27,7 @@ ig.module(
 
             state: PlayerState.PLAYING,
 
-            animSheet:new ig.AnimationSheet('media/char.png', 123, 174),
+            animSheet:new ig.AnimationSheet('media/player.png', 123, 174),
 
             accelGround:400,
             accelLadder:200,
