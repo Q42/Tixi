@@ -137,13 +137,15 @@ ig.Image = ig.Class.extend({
 	},
 	
 	
-	drawTile: function( targetX, targetY, tile, tileWidth, tileHeight, flipX, flipY ) {
+	drawTile: function( targetX, targetY, tile, tileWidth, tileHeight, flipX, flipY, drawWidth ) {
 		tileHeight = tileHeight ? tileHeight : tileWidth;
+
+		if (typeof drawWidth === 'undefined') drawWidth = Infinity;
 		
 		if( !this.loaded || tileWidth > this.width || tileHeight > this.height ) { return; }
 		
 		var scale = ig.system.scale;
-		var tileWidthScaled = Math.floor(tileWidth * scale);
+		var tileWidthScaled = Math.floor(Math.min(drawWidth, tileWidth) * scale);
 		var tileHeightScaled = Math.floor(tileHeight * scale);
 		
 		var scaleX = flipX ? -1 : 1;

@@ -8,6 +8,7 @@ ig.module(
 .defines(function(){ "use strict";
 
 ig.AnimationSheet = ig.Class.extend({
+	drawWidth: Infinity,
 	width: 8,
 	height: 8,
 	image: null,
@@ -100,7 +101,7 @@ ig.Animation = ig.Class.extend({
 			this.sheet.image.drawTile(
 				targetX, targetY,
 				this.tile, this.sheet.width, this.sheet.height,
-				this.flip.x, this.flip.y
+				this.flip.x, this.flip.y, this.sheet.drawWidth
 			);
 		}
 		else {
@@ -113,7 +114,7 @@ ig.Animation = ig.Class.extend({
 			this.sheet.image.drawTile(
 				-this.pivot.x, -this.pivot.y,
 				this.tile, this.sheet.width, this.sheet.height,
-				this.flip.x, this.flip.y
+				this.flip.x, this.flip.y, this.sheet.drawWidth
 			);
 			ig.system.context.restore();
 		}
