@@ -19,7 +19,7 @@ EntityNumberixi = ig.Entity.extend({
 	returningMaxVel: {x: Infinity, y: Infinity},
 	maxVel: {x: 100, y: 100},
 	friction: {x: 150, y: 0},
-	
+
 	type: ig.Entity.TYPE.B, // Evil enemy group
 	checkAgainst: ig.Entity.TYPE.A, // Check against friendly
 	collides: ig.Entity.COLLIDES.PASSIVE,
@@ -36,10 +36,10 @@ EntityNumberixi = ig.Entity.extend({
 	dragReturnVelocity: {x: undefined, y: undefined},
 
 	number: 1,
-	
+
 	animSheet: new ig.AnimationSheet( 'media/numberixi.png', 133, 122 ),
-	
-	
+
+
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
 
@@ -60,21 +60,39 @@ EntityNumberixi = ig.Entity.extend({
     cleanup: function() {
         this.currentAnim = this.anims.death;
     },
-	
+
 	update: function() {
         if (this.anims.death.loopCount > 0) {
             this.kill();
         }
 
+        this._stopDragging = function() {
+			this.state = NumberixiState.RETURNING;
+	    	this.gravityFactor = 0;
+	        var dx = this.dragStartPos.x - this.pos.x;
+	        var dy = this.dragStartPos.y - this.pos.y;
+	        this.dragReturnVelocity.x = dx * 1.5;
+	        this.dragReturnVelocity.y = dy * 1.5;
+	        this.maxVel = this.returningMaxVel;
+        }
+
+        var player = ig.game.getEntitiesByType('EntityPlayer')
+		  , distanceToPlayer = this.distanceTo( player[0] )
+
         switch (this.state) {
         	case NumberixiState.IDLE:
 				if (ig.input.pressed('click') && this.inFocus()) {
-			        this.state = NumberixiState.DRAGGING;
-			        this.currentAnim = this.movingLeft ? this.anims.pause : this.anims.pauseflipped;
-			        this.dragStartPos = this.pos;
-			        this.dragOffset.x = ig.input.mouse.x - this.pos.x;
-			        this.dragOffset.y = ig.input.mouse.y - this.pos.y;
-			        this.collides = ig.Entity.COLLIDES.NEVER;
+					// Draggen alleen toegestaan als je in range bent.
+					if( distanceToPlayer < 300 ) {
+				        this.state = NumberixiState.DRAGGING;
+				        this.currentAnim = this.movingLeft ? this.anims.pause : this.anims.pauseflipped;
+				        this.dragStartPos = this.pos;
+				        this.dragOffset.x = ig.input.mouse.x - this.pos.x;
+				        this.dragOffset.y = ig.input.mouse.y - this.pos.y;
+				        this.collides = ig.Entity.COLLIDES.NEVER;
+					} else {
+						return;
+					}
 			    }
 			    else
 			    {
@@ -89,13 +107,7 @@ EntityNumberixi = ig.Entity.extend({
         	case NumberixiState.DRAGGING:
         		// TODO voor Tom als we buiten het scherm bewegen, releasen
 			    if (ig.input.released('click')) {
-			        this.state = NumberixiState.RETURNING;
-			    	this.gravityFactor = 0;
-			        var dx = this.dragStartPos.x - this.pos.x;
-			        var dy = this.dragStartPos.y - this.pos.y;
-			        this.dragReturnVelocity.x = dx * 1.5;
-			        this.dragReturnVelocity.y = dy * 1.5;
-			        this.maxVel = this.returningMaxVel;
+			        this._stopDragging()
 
 		            // check answerixis
 		            var answerixis = ig.game.getEntitiesByType('EntityAnswerixi');
@@ -112,10 +124,13 @@ EntityNumberixi = ig.Entity.extend({
 
 			    }
 
-
-		    	this.pos.x = ig.input.mouse.x - this.dragOffset.x;
-		    	this.pos.y = ig.input.mouse.y - this.dragOffset.y;
-
+			    // Als je uit range dragged gaat de numberixi terug.
+				if( distanceToPlayer < 300 ) {
+		    		this.pos.x = ig.input.mouse.x - this.dragOffset.x;
+		    		this.pos.y = ig.input.mouse.y - this.dragOffset.y;
+		    	}else {
+			        this._stopDragging();
+				}
 			    break;
 
 			case NumberixiState.RETURNING:
@@ -152,17 +167,17 @@ EntityNumberixi = ig.Entity.extend({
 			this.movingLeft = false;
 		if (this.pos.x > maxX && !this.movingLeft)
 			this.movingLeft = true;
-		
+
 		var xdir = this.movingLeft ? -1 : 1;
 		this.vel.x = this.speed * xdir;
 		this.currentAnim = this.movingLeft ? this.anims.crawl : this.anims.crawlflipped;
-	},	
-	
+	},
+
 	collideWith: function( other, axis ) {
 		this.parent( other, axis );
 
 		this.movingLeft = !this.movingLeft;
-	},	
+	},
 
 	handleMovementTrace: function( res ) {
 	    if (this.state == NumberixiState.DRAGGING || this.state == NumberixiState.RETURNING) {
@@ -185,7 +200,7 @@ EntityNumberixi = ig.Entity.extend({
 	    }
 	    this.parent( res );
 	},
-	
+
 	check: function( other ) {
 	}
 });
