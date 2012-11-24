@@ -73,6 +73,9 @@ MyGame = ig.Game.extend({
 				color: color,
 				callback: function() {
 					self.currentLevel++; // TODO maximeren
+					if (self.currentLevel == 3)
+						self.currentLevel = 0;
+					
 					self.loadLevel( window['Level' + self.currentLevel] );
 					self.state = GameState.LOADED;
 				}

@@ -7,13 +7,13 @@ ig.module(
 .defines(function(){
 	
 EntityIntro = ig.Entity.extend({
-	size: {x: 691, y: 444},
+	size: {x: 669, y: 410},
 	
 	type: ig.Entity.TYPE.B, // Evil enemy group
 	checkAgainst: ig.Entity.TYPE.A, // Check against friendly
 	collides: ig.Entity.COLLIDES.FIXED,
 	
-	animSheet: new ig.AnimationSheet( 'media/intro.png', 691, 444 ),
+	animSheet: new ig.AnimationSheet( 'media/intro.png', 669, 410 ),
 	
 	
 	init: function( x, y, settings ) {
