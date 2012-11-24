@@ -22,7 +22,7 @@ EntityAnswerixi = ig.Entity.extend({
 
 		this.addAnim( 'idle', 1, [0] );
 		// TODO animatie versoepelen
-        this.addAnim( 'death', .3, [0, 1, 2, 3, 4, 5, 6, 7, 8], true );
+        this.addAnim( 'death', .1, [0, 1, 2, 3, 4, 5, 6, 7, 8], true );
 	},
 	
 	
@@ -34,6 +34,7 @@ EntityAnswerixi = ig.Entity.extend({
 	},
 
     cleanup: function() {
+    	this.anims.death.rewind();
     	this.currentAnim = this.anims.death;
     },
 
