@@ -19,7 +19,7 @@ EntityExitixi = ig.Entity.extend({
 
   init: function( x, y, settings ) {
     this.parent( x, y, settings );
-    
+
     this.addAnim( 'closed', 1, [3], true );
     this.addAnim( 'opened', 1, [0], true );
     this.addAnim( 'open', .15, [3, 2, 1, 0], true );
@@ -46,7 +46,7 @@ EntityExitixi = ig.Entity.extend({
 
   closeDoor: function () {
     if (this.currentAnim == this.anims.close || this.currentAnim == this.anims.closed) return;
-    
+
     this.anims.close.rewind();
     this.currentAnim = this.anims.close;
     this.currentAnim.flip.x = this.entrance;
@@ -72,11 +72,8 @@ EntityExitixi = ig.Entity.extend({
 
     // Ambilight alert!
     console.info('Sending alert to ambilight.');
-    // try {
-    //   var img = new Image();
-    //   img.src = 'http://www.huelandsspoor.nl/api/effects/alert';
-    // }
-    // catch (_) {}
+    var img = new Image();
+    img.src = 'http://www.huelandsspoor.nl/api/effects/alert';
   }
 });
 
