@@ -38,6 +38,8 @@ EntityPlayer = ig.Entity.extend({
   otherImage:new ig.Image( 'media/player.png' ),
 
   originalPos: undefined,
+  magicBeam: undefined,
+  beamTargetPos: {x: 500, y: 350},
 
   accelGround:400,
   accelLadder:200,
@@ -56,7 +58,10 @@ EntityPlayer = ig.Entity.extend({
     this.addAnim('pause', 2, [0]);
     this.addAnim('idle', .3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
     this.addAnim('run', 0.1, [0, 1]);
+    this.addAnim('beaming', 1, [2]);
 
+    this.magicBeam = ig.game.spawnEntity(EntityMagicBeam, this.pos.x, this.pos.y, {});
+    this.magicBeam.player = this;
 
     this.currentAnim.flip.x = this.flip;
   },
@@ -64,6 +69,12 @@ EntityPlayer = ig.Entity.extend({
   collideWith:function (other, axis) {
     this.dest = this.pos; // Stop moving
     this.parent(other, axis);
+  },
+
+  showMagicBeam: function (show) {
+    this.magicBeam.visible = show;
+
+    this.flip = this.pos.x > this.magicBeam.targetPos.x;
   },
 
   update:function () {
@@ -136,7 +147,10 @@ EntityPlayer = ig.Entity.extend({
       }
 
       // Update animation
-      if (this.vel.x == 0 && this.accel.x == 0) {
+      if (this.magicBeam.visible) {
+        this.currentAnim = this.anims.beaming;
+      }
+      else if (this.vel.x == 0 && this.accel.x == 0) {
         this.currentAnim = this.anims.idle;
         this.dest = this.pos;
       } else {
@@ -171,6 +185,72 @@ EntityPlayer = ig.Entity.extend({
 
     // move!
     this.parent();
+  },
+
+  pointBeamAt: function (pos) {
+    this.magicBeam.targetPos = pos;
+  },
+});
+
+EntityMagicBeam = ig.Entity.extend({
+  size: { x: 952, y: 21 },
+
+	type: ig.Entity.TYPE.NONE,
+	checkAgainst: ig.Entity.TYPE.B,
+	collides: ig.Entity.COLLIDES.NEVER,
+  zIndex: 0,
+
+  player: undefined,
+  targetPos: { x: 500, y: 300 },
+
+	animSheet: new ig.AnimationSheet('media/magic-beam.png', 952, 21),
+
+  init: function (x, y, settings) {
+    this.parent(x, y, settings);
+
+    this.gravityFactor = 0;
+
+    // Add the animations
+    this.addAnim('pulsing', .2, [0]);
+  },
+
+  update: function () {
+
+    if (!this.player) return;
+
+    // position magic beam
+    var wandPos = {
+      x : this.player.pos.x + (this.player.flip ? 10 : 108),
+      y : this.player.pos.y + 113
+    };
+
+    if (this.visible)
+    {
+      this.pos.x = wandPos.x;
+      this.pos.y = wandPos.y;
+    }
+    else
+    {
+      this.pos.x = -1000;
+      this.pos.y = -1000;
+    }
+    this.size.width = this.dist(wandPos, this.targetPos);
+    this.animSheet.width = this.size.width;
+    this.currentAnim.angle = -this.angle(wandPos, this.targetPos) - Math.PI * .5;
+    this.currentAnim.pivot.x = 0;
+    this.currentAnim.pivot.y = 10;
+
+    this.parent();
+  },
+
+  dist: function (p1, p2) {
+    var dx = Math.abs(p1.x - p2.x);
+    var dy = Math.abs(p1.y - p2.y);
+    return Math.sqrt(dx*dx+ dy*dy);
+  },
+
+  angle: function (p1, p2) {
+    return Math.atan2(p1.x - p2.x, p1.y - p2.y);
   }
 });
 

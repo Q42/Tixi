@@ -19,6 +19,7 @@ EntityNumberixi = ig.Entity.extend({
   returningMaxVel: {x: Infinity, y: Infinity},
   maxVel: {x: 100, y: 100},
   friction: {x: 150, y: 0},
+  zIndex: 2,
 
   type: ig.Entity.TYPE.B, // Evil enemy group
   checkAgainst: ig.Entity.TYPE.A, // Check against friendly
@@ -61,7 +62,11 @@ EntityNumberixi = ig.Entity.extend({
         this.currentAnim = this.anims.death;
     },
 
-  update: function() {
+    getPlayer: function () {
+      return ig.game.getEntitiesByType('EntityPlayer')[0];
+    },
+
+    update: function() {
         if (this.anims.death.loopCount > 0) {
             this.kill();
         }
@@ -76,12 +81,13 @@ EntityNumberixi = ig.Entity.extend({
           this.maxVel = this.returningMaxVel;
         }
 
-        var player = ig.game.getEntitiesByType('EntityPlayer')
-      , distanceToPlayer = this.distanceTo( player[0] )
-      , maxDragDistance = 400
+      var player = this.getPlayer();
+      var distanceToPlayer = this.distanceTo( player )
+      var maxDragDistance = 400
 
         switch (this.state) {
           case NumberixiState.IDLE:
+            player.showMagicBeam(false);
         if (ig.input.pressed('click') && this.inFocus()) {
           // Draggen alleen toegestaan als je in range bent.
           if( distanceToPlayer < maxDragDistance ) {
@@ -106,6 +112,7 @@ EntityNumberixi = ig.Entity.extend({
             break;
 
           case NumberixiState.DRAGGING:
+            player.showMagicBeam(true);
             // TODO voor Tom als we buiten het scherm bewegen, releasen
           if (ig.input.released('click')) {
               this._stopDragging()
@@ -118,6 +125,7 @@ EntityNumberixi = ig.Entity.extend({
                     var dy = Math.round(numberixi.pos.y - answerixi.pos.y);
                     var offBy = 100;
                     if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
+                        numberixi.state = NumberixiState.IDLE;
                         answerixi.cleanup();
                         numberixi.cleanup();
                     }
@@ -126,15 +134,16 @@ EntityNumberixi = ig.Entity.extend({
           }
 
           // Als je uit range dragged gaat de numberixi terug.
-        if( distanceToPlayer < maxDragDistance ) {
+        // if( distanceToPlayer < maxDragDistance ) {
             this.pos.x = ig.input.mouse.x - this.dragOffset.x;
             this.pos.y = ig.input.mouse.y - this.dragOffset.y;
-          }else {
-              this._stopDragging();
-        }
+        //   }else {
+        //       this._stopDragging();
+        // }
           break;
 
       case NumberixiState.RETURNING:
+        player.showMagicBeam(true);
 
           var originalXPosReached = (this.dragReturnVelocity.x < 0 && this.pos.x <= this.dragStartPos.x) || (this.dragReturnVelocity.x >= 0 && this.pos.x >= this.dragStartPos.x);
         var originalYPosReached = (this.dragReturnVelocity.y < 0 && this.pos.y <= this.dragStartPos.y) || (this.dragReturnVelocity.y >= 0 && this.pos.y >= this.dragStartPos.y);
@@ -149,6 +158,11 @@ EntityNumberixi = ig.Entity.extend({
 
             break;
         }
+
+    player.pointBeamAt({
+      x: this.pos.x + this.size.x / 2,
+      y: this.pos.y + this.size.y / 2
+    });
 
     this.parent();
   },
