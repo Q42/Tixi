@@ -141,7 +141,7 @@ EntityPlayer = ig.Entity.extend({
       }
 
       // Update animation
-      if (this.magicBeam.visible) {
+      if (this.magicBeam.target) {
         this.currentAnim = this.anims.beaming;
       }
       else if (this.vel.x == 0 && this.accel.x == 0) {
@@ -222,7 +222,7 @@ EntityMagicBeam = ig.Entity.extend({
     this.gravityFactor = 0;
 
     // Add the animations
-    this.addAnim('pulsing', .2, [0]);
+    this.addAnim('pulsing', .2, [0, 1, 2, 3, 4, 5, 6]);
   },
 
   update: function () {
@@ -249,7 +249,7 @@ EntityMagicBeam = ig.Entity.extend({
     this.pos.x = wandPos.x;
     this.pos.y = wandPos.y;
     this.size.width = this.dist(wandPos, targetCenter);
-    this.animSheet.width = this.size.width;
+    this.animSheet.drawWidth = this.size.width;
     this.currentAnim.angle = -this.angle(wandPos, targetCenter) - Math.PI * .5;
     this.currentAnim.pivot.x = 0;
     this.currentAnim.pivot.y = 10;
