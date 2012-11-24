@@ -10,6 +10,7 @@ EntityAnswerixi = ig.Entity.extend({
   size: {x: 205, y: 317 - 14 * 2},
   offset: {x: 0, y: 14},
   number: 2,
+  zIndex: 2,
   
   type: ig.Entity.TYPE.B, // Evil enemy group
   checkAgainst: ig.Entity.TYPE.A, // Check against friendly
