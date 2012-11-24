@@ -21,7 +21,7 @@ EntityNumberixi = ig.Entity.extend({
   returningMaxVel: {x: Infinity, y: Infinity},
   maxVel: {x: 100, y: 100},
   friction: {x: 150, y: 0},
-  zIndex: 4,
+  zIndex: 3,
 
   type: ig.Entity.TYPE.B, // Evil enemy group
   checkAgainst: ig.Entity.TYPE.A, // Check against friendly
@@ -132,7 +132,7 @@ EntityNumberixi = ig.Entity.extend({
                     numberixi.gravityFactor = 0;
                     numberixi.targetPos = {
                       x: numberixi.dropTarget.pos.x + numberixi.size.x / 4,
-                      y: numberixi.dropTarget.pos.y - numberixi.size.y / 5 * 4
+                      y: numberixi.dropTarget.pos.y - numberixi.size.y + 5
                     };
                     if (numberixi.dropTarget.numberixi1) {
                       numberixi.targetPos.x = numberixi.dropTarget.pos.x + numberixi.dropTarget.size.x - numberixi.size.x;

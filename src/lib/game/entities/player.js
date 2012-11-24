@@ -182,9 +182,9 @@ EntityPlayer = ig.Entity.extend({
   },
 
   setBeamTarget: function (numberixi) {
-    if (this.magicBeam.target)
+    if (this.magicBeam.target && !numberixi)
       this.stopBeaming();
-    if (numberixi)
+    if (numberixi && !this.magicBeam.target)
       this.startBeaming();
 
     this.magicBeam.target = numberixi;
@@ -195,11 +195,14 @@ EntityPlayer = ig.Entity.extend({
   },
 
   startBeaming: function () {
-    // your code here
+    this.sound = new ig.Sound( 'media/magic.mp3' );
+    this.sound.volume = 0.05;
+    this.sound.play();
   },
 
   stopBeaming: function () {
-    // your code here
+    if (this.sound)
+      this.sound.stop();
   },
 });
 

@@ -11,7 +11,8 @@ ig.module(
 	'game.levels.0',
 	'game.levels.1',
 	'game.levels.2',
-	'game.levels.3'
+	'game.levels.3',
+	'game.levels.4'
 )
 .defines(function(){
 
@@ -39,7 +40,7 @@ MyGame = ig.Game.extend({
 
 	gravity: 300, // All entities are affected by this
 	currentLevel: 0,
-	numberOfLevels: 3, // excluding title screen
+	numberOfLevels: 4, // excluding title screen
 	state: GameState.LOADED,
 	screenfaderIn: undefined,
 	screenfaderOut: undefined,
