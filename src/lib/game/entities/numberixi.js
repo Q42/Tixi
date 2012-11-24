@@ -21,6 +21,7 @@ EntityNumberixi = ig.Entity.extend({
   returningMaxVel: {x: Infinity, y: Infinity},
   maxVel: {x: 100, y: 100},
   friction: {x: 150, y: 0},
+  zIndex: 4,
 
   type: ig.Entity.TYPE.B, // Evil enemy group
   checkAgainst: ig.Entity.TYPE.A, // Check against friendly
@@ -66,7 +67,11 @@ EntityNumberixi = ig.Entity.extend({
         this.currentAnim = this.anims.death;
     },
 
-  update: function() {
+    getPlayer: function () {
+      return ig.game.getEntitiesByType('EntityPlayer')[0];
+    },
+
+    update: function() {
         if (this.anims.death.loopCount > 0) {
             this.kill();
         }
@@ -82,9 +87,9 @@ EntityNumberixi = ig.Entity.extend({
           this.maxVel = this.returningMaxVel;
         }
 
-        var player = ig.game.getEntitiesByType('EntityPlayer')
-      , distanceToPlayer = this.distanceTo( player[0] )
-      , maxDragDistance = 400
+      var player = this.getPlayer();
+      var distanceToPlayer = this.distanceTo( player )
+      var maxDragDistance = 400
 
         switch (this.state) {
           case NumberixiState.IDLE:
@@ -112,6 +117,7 @@ EntityNumberixi = ig.Entity.extend({
             break;
 
           case NumberixiState.DRAGGING:
+            player.setBeamTarget(this);
             // TODO voor Tom als we buiten het scherm bewegen, releasen
           if (ig.input.released('click')) {
 
@@ -122,6 +128,7 @@ EntityNumberixi = ig.Entity.extend({
                   if (numberixi.touches(operatorixi)) {
                     numberixi.dropTarget = operatorixi;
                     numberixi.state = NumberixiState.LOCKING;
+                    player.setBeamTarget(null);
                     numberixi.gravityFactor = 0;
                     numberixi.targetPos = {
                       x: numberixi.dropTarget.pos.x + numberixi.size.x / 4,
@@ -151,8 +158,10 @@ EntityNumberixi = ig.Entity.extend({
                       var offBy = 100;
                       if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
                           if (numberixi.number == answerixi.number) {
-                            answerixi.cleanup();
+                            numberixi.state = NumberixiState.IDLE;
+                            player.setBeamTarget(null);
                             numberixi.cleanup();
+                            answerixi.cleanup();
                           }
                       }
                   });
@@ -177,6 +186,7 @@ EntityNumberixi = ig.Entity.extend({
 
           if (originalXPosReached && originalYPosReached) {
             this.state = NumberixiState.IDLE;
+            player.setBeamTarget(null);
             return;
           }
 
