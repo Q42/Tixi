@@ -20,6 +20,7 @@ EntityPlayer = ig.Entity.extend({
   // frames, so we have to move the collision box a bit (offset)
   size:{x:123, y:174},
   offset:{x:0, y:0},
+  zIndex: 6,
 
   maxVel:{x:200, y:200},
   friction:{x:600, y:0},
@@ -208,7 +209,7 @@ EntityMagicBeam = ig.Entity.extend({
 	type: ig.Entity.TYPE.NONE,
 	checkAgainst: ig.Entity.TYPE.B,
 	collides: ig.Entity.COLLIDES.NEVER,
-  zIndex: 0,
+  zIndex: 3,
 
   player: undefined,
   target: undefined,

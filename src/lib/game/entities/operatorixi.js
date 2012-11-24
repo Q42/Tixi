@@ -11,6 +11,7 @@ EntityOperatorixi = ig.Entity.extend({
   offset: {x: 57, y: 17},
   numberixi1: undefined,
   numberixi2: undefined,
+  zIndex: 5,
   
   type: ig.Entity.TYPE.A, // Evil enemy group
   checkAgainst: ig.Entity.TYPE.B, // Check against friendly

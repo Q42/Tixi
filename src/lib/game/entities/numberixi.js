@@ -21,7 +21,7 @@ EntityNumberixi = ig.Entity.extend({
   returningMaxVel: {x: Infinity, y: Infinity},
   maxVel: {x: 100, y: 100},
   friction: {x: 150, y: 0},
-  zIndex: 2,
+  zIndex: 4,
 
   type: ig.Entity.TYPE.B, // Evil enemy group
   checkAgainst: ig.Entity.TYPE.A, // Check against friendly
