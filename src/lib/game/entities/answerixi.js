@@ -23,17 +23,9 @@ EntityAnswerixi = ig.Entity.extend({
     this.parent( x, y, settings );
 
     if (this.number == 2) {
-      this.animSheet.width = 205;
-      this.animSheet.height = 317;
-      this.size = {x: 205, y: 317 - 14 * 2};
-      this.offset = { x: 0, y: 15};
       this.animSheet.image = this.image2;
     }
     else if (this.number == 5) {
-      this.animSheet.width = 227;
-      this.animSheet.height = 298;
-      this.size = { x: 227, y: 298-2*2};
-      this.offset = { x: 0, y: 2};
       this.animSheet.image = this.image5;
     }
 
