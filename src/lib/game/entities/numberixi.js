@@ -150,8 +150,10 @@ EntityNumberixi = ig.Entity.extend({
                       var dy = Math.round(numberixi.pos.y - answerixi.pos.y);
                       var offBy = 100;
                       if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
-                          answerixi.cleanup();
-                          numberixi.cleanup();
+                          if (numberixi.number == answerixi.number) {
+                            answerixi.cleanup();
+                            numberixi.cleanup();
+                          }
                       }
                   });
                 }

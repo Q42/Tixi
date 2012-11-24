@@ -43,7 +43,7 @@ EntityOperatorixi = ig.Entity.extend({
         });
         self.anims.idle.rewind();
         self.currentAnim = self.anims.idle;
-      }, 1500);
+      }, 1800);
     }
 
     this.parent();
