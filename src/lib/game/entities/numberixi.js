@@ -116,7 +116,7 @@ EntityNumberixi = ig.Entity.extend({
 		            answerixis.forEach(function(answerixi) {
 		                var dx = Math.round(numberixi.pos.x - answerixi.pos.x);
 		                var dy = Math.round(numberixi.pos.y - answerixi.pos.y);
-		                var offBy = 50;
+		                var offBy = 100;
 		                if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
 		                    answerixi.cleanup();
 		                    numberixi.cleanup();

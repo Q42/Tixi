@@ -1,17 +1,12 @@
-MathDragon
-==========
+tixi
+====
 
-Most awewome game ever!
+Accidental "math" game for kids.
 
-Todo
-----
+![Q42 screenshot](/Q42/MathDragon/raw/master/screenshot.png)
 
-1. Come up with better name
-2. ???
-3. Profit
-
-Ambilight
----------
+Hue ambilight
+-------------
 
 Press L to activate.
 Press L again to deactivate.

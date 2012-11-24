@@ -8,6 +8,7 @@ ig.module(
 	'plugins.screen-fader',
 
 	'game.entities.player',
+	'game.levels.0',
 	'game.levels.1',
 	'game.levels.2'
 )
@@ -36,7 +37,7 @@ GameState = {
 MyGame = ig.Game.extend({
 
 	gravity: 300, // All entities are affected by this
-	currentLevel: 1,
+	currentLevel: 0,
 	state: GameState.LOADED,
 	screenfaderIn: undefined,
 	screenfaderOut: undefined,
@@ -55,7 +56,7 @@ MyGame = ig.Game.extend({
 		ig.music.play();
 
 		// Load the LevelTest as required above ('game.level.test')
-		this.loadLevel( Level1 );
+		this.loadLevel( Level0 );
 	},
 
 	loadNextLevel: function() {
@@ -72,6 +73,9 @@ MyGame = ig.Game.extend({
 				color: color,
 				callback: function() {
 					self.currentLevel++; // TODO maximeren
+					if (self.currentLevel == 3)
+						self.currentLevel = 0;
+					
 					self.loadLevel( window['Level' + self.currentLevel] );
 					self.state = GameState.LOADED;
 				}

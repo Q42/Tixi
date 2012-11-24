@@ -34,6 +34,7 @@ ig.module(
 
             originalAnimSheetWidth: 123,
             animSheet:new ig.AnimationSheet('media/player_entering.png', 123, 174),
+            enterImage:new ig.Image( 'media/player_entering.png' ),
             otherImage:new ig.Image( 'media/player.png' ),
 
             originalPos: undefined,
@@ -49,11 +50,13 @@ ig.module(
                 this.originalPos = this.pos;
                 this.animSheet.width = 0;
                 this.flip = true;
+                this.animSheet.image = this.enterImage;
 
                 // Add the animations
                 this.addAnim('pause', 2, [0]);
                 this.addAnim('idle', .3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
                 this.addAnim('run', 0.1, [0, 1]);
+
 
                 this.currentAnim.flip.x = this.flip;
             },
@@ -64,7 +67,20 @@ ig.module(
             },
 
             update:function () {
-                if (this.state == PlayerState.START && this.entrance) {
+                if (this.state == PlayerState.START && this.noEntrance)
+                {
+                    this.state = PlayerState.PLAYING;
+                    this.animSheet.width = this.originalAnimSheetWidth;
+                    this.animSheet.image = this.otherImage;
+                    this.currentAnim.flip.x = false;
+                    this.flip = false;
+
+                    this.pos.x = -(this.size.x);
+                    this.dest = {x: 80, y: this.pos.y};
+                    this.state = PlayerState.PLAYING;
+                    ig.game.state = GameState.ENTERED;
+                }
+                else if (this.state == PlayerState.START && this.entrance) {
                     this.pos.x = this.entrance.pos.x + this.entrance.size.x - 90;
                     this.state = PlayerState.ENTERING;
                 }
