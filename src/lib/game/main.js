@@ -28,7 +28,8 @@ function _rgbToHex(r, g, b) {
 GameState = {
 	LOADING: 'LOADING',
 	LOADED: 'LOADED',
-	ENTERED: 'ENTERED'
+	ENTERED: 'ENTERED',
+	PLAYING: 'PLAYING'
 };
 
 

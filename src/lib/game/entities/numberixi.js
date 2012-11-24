@@ -78,12 +78,13 @@ EntityNumberixi = ig.Entity.extend({
 
         var player = ig.game.getEntitiesByType('EntityPlayer')
 		  , distanceToPlayer = this.distanceTo( player[0] )
+		  , maxDragDistance = 400
 
         switch (this.state) {
         	case NumberixiState.IDLE:
 				if (ig.input.pressed('click') && this.inFocus()) {
 					// Draggen alleen toegestaan als je in range bent.
-					if( distanceToPlayer < 300 ) {
+					if( distanceToPlayer < maxDragDistance ) {
 				        this.state = NumberixiState.DRAGGING;
 				        this.currentAnim = this.movingLeft ? this.anims.pause : this.anims.pauseflipped;
 				        this.dragStartPos = this.pos;
@@ -125,7 +126,7 @@ EntityNumberixi = ig.Entity.extend({
 			    }
 
 			    // Als je uit range dragged gaat de numberixi terug.
-				if( distanceToPlayer < 300 ) {
+				if( distanceToPlayer < maxDragDistance ) {
 		    		this.pos.x = ig.input.mouse.x - this.dragOffset.x;
 		    		this.pos.y = ig.input.mouse.y - this.dragOffset.y;
 		    	}else {
