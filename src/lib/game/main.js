@@ -59,7 +59,7 @@ MyGame = ig.Game.extend({
 		ig.music.play();
 
 		// Load the LevelTest as required above ('game.level.test')
-		this.loadLevel( Level1 );
+		this.loadLevel( Level0 );
 	},
 
 	loadNextLevel: function() {
@@ -78,7 +78,6 @@ MyGame = ig.Game.extend({
 					self.currentLevel++;
 					if (self.currentLevel == this.numberOfLevels+1)
 						self.currentLevel = 0;
-					
 					self.loadLevel( window['Level' + self.currentLevel] );
 					self.state = GameState.LOADED;
 				}

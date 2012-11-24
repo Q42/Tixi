@@ -59,6 +59,7 @@ EntityPlayer = ig.Entity.extend({
     this.addAnim('idle', .3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
     this.addAnim('run', 0.1, [0, 1]);
     this.addAnim('beaming', 1, [2]);
+    this.addAnim('joke', 0.2, [0, 0, 0, 0, 0, 0, 0, 8, 9, 8, 8, 9, 8, 9, 8, 9, 0], true);
 
     this.currentAnim.flip.x = this.flip;
 
@@ -115,6 +116,15 @@ EntityPlayer = ig.Entity.extend({
     }
     else if (this.state == PlayerState.PLAYING)
     {
+      if (ig.game.currentLevel == 4 && this.currentAnim != this.anims.joke) {
+        this.anims.joke.rewind();
+        this.currentAnim = this.anims.joke;
+      }
+      if (this.currentAnim == this.anims.joke) {
+        this.parent();
+        return;
+      }
+
       // move left or right
       var accel = this.standing ? this.accelGround : this.accelLadder;
       if (ig.input.pressed('click')) {
