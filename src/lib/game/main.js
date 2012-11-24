@@ -10,7 +10,8 @@ ig.module(
 	'game.entities.player',
 	'game.levels.0',
 	'game.levels.1',
-	'game.levels.2'
+	'game.levels.2',
+	'game.levels.3'
 )
 .defines(function(){
 
@@ -38,6 +39,7 @@ MyGame = ig.Game.extend({
 
 	gravity: 300, // All entities are affected by this
 	currentLevel: 0,
+	numberOfLevels: 3, // excluding title screen
 	state: GameState.LOADED,
 	screenfaderIn: undefined,
 	screenfaderOut: undefined,
@@ -51,7 +53,7 @@ MyGame = ig.Game.extend({
 		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
 		ig.input.bind(ig.KEY.MOUSE1, 'click');
 
-		ig.music.add( 'media/DST-ByTheField.mp3' );
+		ig.music.add( 'media/DST-TimeToDream.mp3' );
 		ig.music.volume = 1;
 		ig.music.play();
 
@@ -72,8 +74,8 @@ MyGame = ig.Game.extend({
 				speed: speed,
 				color: color,
 				callback: function() {
-					self.currentLevel++; // TODO maximeren
-					if (self.currentLevel == 3)
+					self.currentLevel++;
+					if (self.currentLevel == this.numberOfLevels+1)
 						self.currentLevel = 0;
 					
 					self.loadLevel( window['Level' + self.currentLevel] );
@@ -157,8 +159,9 @@ MyGame = ig.Game.extend({
 
 
 
-// Start the Game with 60fps, a resolution of 240x160, scaled
-// up by a factor of 2
-ig.main( '#canvas', MyGame, 60, 1024, 748, 1 );
+// Start the Game with 60fps, a resolution of 1024x748, scaled
+// up by a factor of ...
+var factor = 1;
+ig.main( '#canvas', MyGame, 60, 1024*factor, 748*factor, 1/factor );
 
 });
