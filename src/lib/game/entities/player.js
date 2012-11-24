@@ -64,7 +64,16 @@ ig.module(
             },
 
             update:function () {
-                if (this.state == PlayerState.START && this.entrance) {
+                if (this.state == PlayerState.START && this.noEntrance)
+                {
+                    this.state = PlayerState.PLAYING;
+                    this.animSheet.width = this.originalAnimSheetWidth;
+                    this.animSheet.image = this.otherImage;
+                    this.currentAnim.flip.x = false;
+                    this.flip = false;
+                    ig.game.state = GameState.ENTERED;
+                }
+                else if (this.state == PlayerState.START && this.entrance) {
                     this.pos.x = this.entrance.pos.x + this.entrance.size.x - 90;
                     this.state = PlayerState.ENTERING;
                 }
