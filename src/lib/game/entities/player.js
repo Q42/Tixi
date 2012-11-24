@@ -39,7 +39,6 @@ EntityPlayer = ig.Entity.extend({
 
   originalPos: undefined,
   magicBeam: undefined,
-  beamTargetPos: {x: 500, y: 350},
 
   accelGround:400,
   accelLadder:200,
@@ -69,12 +68,6 @@ EntityPlayer = ig.Entity.extend({
   collideWith:function (other, axis) {
     this.dest = this.pos; // Stop moving
     this.parent(other, axis);
-  },
-
-  showMagicBeam: function (show) {
-    this.magicBeam.visible = show;
-
-    this.flip = this.pos.x > this.magicBeam.targetPos.x;
   },
 
   update:function () {
@@ -187,8 +180,25 @@ EntityPlayer = ig.Entity.extend({
     this.parent();
   },
 
-  pointBeamAt: function (pos) {
-    this.magicBeam.targetPos = pos;
+  setBeamTarget: function (numberixi) {
+    if (this.magicBeam.target)
+      this.stopBeaming();
+    if (numberixi)
+      this.startBeaming();
+
+    this.magicBeam.target = numberixi;
+
+    if (numberixi) {
+      this.flip = this.pos.x > this.magicBeam.target.pos.x;
+    }
+  },
+
+  startBeaming: function () {
+    // your code here
+  },
+
+  stopBeaming: function () {
+    // your code here
   },
 });
 
@@ -201,7 +211,7 @@ EntityMagicBeam = ig.Entity.extend({
   zIndex: 0,
 
   player: undefined,
-  targetPos: { x: 500, y: 300 },
+  target: undefined,
 
 	animSheet: new ig.AnimationSheet('media/magic-beam.png', 952, 21),
 
@@ -224,19 +234,22 @@ EntityMagicBeam = ig.Entity.extend({
       y : this.player.pos.y + 113
     };
 
-    if (this.visible)
-    {
-      this.pos.x = wandPos.x;
-      this.pos.y = wandPos.y;
-    }
-    else
+    if (!this.target)
     {
       this.pos.x = -1000;
       this.pos.y = -1000;
+      return;
     }
-    this.size.width = this.dist(wandPos, this.targetPos);
+    var targetCenter = {
+      x: this.target.pos.x + this.target.size.x / 2,
+      y: this.target.pos.y + this.target.size.y / 2
+    };
+
+    this.pos.x = wandPos.x;
+    this.pos.y = wandPos.y;
+    this.size.width = this.dist(wandPos, targetCenter);
     this.animSheet.width = this.size.width;
-    this.currentAnim.angle = -this.angle(wandPos, this.targetPos) - Math.PI * .5;
+    this.currentAnim.angle = -this.angle(wandPos, targetCenter) - Math.PI * .5;
     this.currentAnim.pivot.x = 0;
     this.currentAnim.pivot.y = 10;
 

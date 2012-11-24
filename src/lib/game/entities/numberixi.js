@@ -93,7 +93,6 @@ EntityNumberixi = ig.Entity.extend({
 
         switch (this.state) {
           case NumberixiState.IDLE:
-            player.showMagicBeam(false);
             if (ig.input.pressed('click') && this.inFocus()) {
               // Draggen alleen toegestaan als je in range bent.
               if( distanceToPlayer < maxDragDistance ) {
@@ -118,11 +117,7 @@ EntityNumberixi = ig.Entity.extend({
             break;
 
           case NumberixiState.DRAGGING:
-            player.pointBeamAt({
-              x: this.pos.x + this.size.x / 2,
-              y: this.pos.y + this.size.y / 2
-            });
-            player.showMagicBeam(true);
+            player.setBeamTarget(this);
             // TODO voor Tom als we buiten het scherm bewegen, releasen
           if (ig.input.released('click')) {
 
@@ -133,6 +128,7 @@ EntityNumberixi = ig.Entity.extend({
                   if (numberixi.touches(operatorixi)) {
                     numberixi.dropTarget = operatorixi;
                     numberixi.state = NumberixiState.LOCKING;
+                    player.setBeamTarget(null);
                     numberixi.gravityFactor = 0;
                     numberixi.targetPos = {
                       x: numberixi.dropTarget.pos.x + numberixi.size.x / 4,
@@ -163,6 +159,7 @@ EntityNumberixi = ig.Entity.extend({
                       if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
                           if (numberixi.number == answerixi.number) {
                             numberixi.state = NumberixiState.IDLE;
+                            player.setBeamTarget(null);
                             numberixi.cleanup();
                             answerixi.cleanup();
                           }
@@ -183,17 +180,13 @@ EntityNumberixi = ig.Entity.extend({
 
         //TODO gelijk trekken met LOCKING (targetPos gebruiken enzo)
         case NumberixiState.RETURNING:
-          player.pointBeamAt({
-            x: this.pos.x + this.size.x / 2,
-            y: this.pos.y + this.size.y / 2
-          });
-          player.showMagicBeam(true);
 
           var originalXPosReached = (this.dragReturnVelocity.x < 0 && this.pos.x <= this.dragStartPos.x) || (this.dragReturnVelocity.x >= 0 && this.pos.x >= this.dragStartPos.x);
           var originalYPosReached = (this.dragReturnVelocity.y < 0 && this.pos.y <= this.dragStartPos.y) || (this.dragReturnVelocity.y >= 0 && this.pos.y >= this.dragStartPos.y);
 
           if (originalXPosReached && originalYPosReached) {
             this.state = NumberixiState.IDLE;
+            player.setBeamTarget(null);
             return;
           }
 
