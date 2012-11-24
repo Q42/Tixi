@@ -9,7 +9,9 @@ ig.module(
 NumberixiState = {
   IDLE: 'IDLE',
   DRAGGING: 'DRAGGING',
-  RETURNING: 'RETURNING'
+  RETURNING: 'RETURNING',
+  LOCKING: 'LOCKING',
+  LOCKED: 'LOCKED'
 };
 
 EntityNumberixi = ig.Entity.extend({
@@ -26,6 +28,9 @@ EntityNumberixi = ig.Entity.extend({
 
   speed: 14,
   movingLeft: true,
+
+  dropTarget: undefined,
+  targetPos: undefined,
 
   startX: undefined,
   maxWalkDistance: 100,
@@ -50,9 +55,9 @@ EntityNumberixi = ig.Entity.extend({
     this.addAnim( 'pauseflipped', 1, [1].map(offsetCalc));
     this.addAnim( 'crawl', Math.random()*0.1+0.15, [0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 2, 4, 4].map(offsetCalc) );
     this.addAnim( 'crawlflipped', Math.random()*0.1+0.15, [1, 1, 5, 5, 1, 1, 5, 5, 1, 1, 5, 5, 1, 3, 5, 5].map(offsetCalc) );
-        this.addAnim( 'death', 1, [0], true);
+    this.addAnim( 'death', 1, [0], true);
 
-        this.maxWalkDistance = Math.random()*20+80;
+    this.maxWalkDistance = Math.random()*20+80;
 
     this.startX = this.pos.x;
   },
@@ -67,8 +72,9 @@ EntityNumberixi = ig.Entity.extend({
         }
 
         this._stopDragging = function() {
-      this.state = NumberixiState.RETURNING;
-        this.gravityFactor = 0;
+          console.log('_stopDragging')
+          this.state = NumberixiState.RETURNING;
+          this.gravityFactor = 0;
           var dx = this.dragStartPos.x - this.pos.x;
           var dy = this.dragStartPos.y - this.pos.y;
           this.dragReturnVelocity.x = dx * 1.5;
@@ -82,73 +88,128 @@ EntityNumberixi = ig.Entity.extend({
 
         switch (this.state) {
           case NumberixiState.IDLE:
-        if (ig.input.pressed('click') && this.inFocus()) {
-          // Draggen alleen toegestaan als je in range bent.
-          if( distanceToPlayer < maxDragDistance ) {
+            if (ig.input.pressed('click') && this.inFocus()) {
+              // Draggen alleen toegestaan als je in range bent.
+              if( distanceToPlayer < maxDragDistance ) {
                 this.state = NumberixiState.DRAGGING;
                 this.currentAnim = this.movingLeft ? this.anims.pause : this.anims.pauseflipped;
                 this.dragStartPos = this.pos;
                 this.dragOffset.x = ig.input.mouse.x - this.pos.x;
                 this.dragOffset.y = ig.input.mouse.y - this.pos.y;
                 this.collides = ig.Entity.COLLIDES.NEVER;
-          } else {
-            return;
-          }
-          }
-          else
-          {
-            this.gravityFactor = 1;
+              } else {
+                return;
+              }
+            }
+            else
+            {
+              this.gravityFactor = 1;
               this.collides = ig.Entity.COLLIDES.PASSIVE;
               this.maxVel = this.originalMaxVel;
-          this.autoWalk();
-        }
+              this.autoWalk();
+            }
 
             break;
 
           case NumberixiState.DRAGGING:
             // TODO voor Tom als we buiten het scherm bewegen, releasen
           if (ig.input.released('click')) {
-              this._stopDragging()
 
-                // check answerixis
-                var answerixis = ig.game.getEntitiesByType('EntityAnswerixi');
+                //check operatorixis
+                var operatorixis = ig.game.getEntitiesByType('EntityOperatorixi');
                 var numberixi = this;
-                answerixis.forEach(function(answerixi) {
-                    var dx = Math.round(numberixi.pos.x - answerixi.pos.x);
-                    var dy = Math.round(numberixi.pos.y - answerixi.pos.y);
-                    var offBy = 100;
-                    if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
-                        answerixi.cleanup();
-                        numberixi.cleanup();
+                operatorixis.forEach(function(operatorixi) {
+                  if (numberixi.touches(operatorixi)) {
+                    numberixi.dropTarget = operatorixi;
+                    numberixi.state = NumberixiState.LOCKING;
+                    numberixi.gravityFactor = 0;
+                    numberixi.targetPos = {
+                      x: numberixi.dropTarget.pos.x + numberixi.size.x / 4,
+                      y: numberixi.dropTarget.pos.y - numberixi.size.y / 5 * 4
+                    };
+                    if (numberixi.dropTarget.numberixi1) {
+                      numberixi.targetPos.x = numberixi.dropTarget.pos.x + numberixi.dropTarget.size.x - numberixi.size.x;
                     }
+                    var dx = numberixi.targetPos.x - numberixi.pos.x;
+                    var dy = numberixi.targetPos.y - numberixi.pos.y;
+                    numberixi.dragReturnVelocity.x = dx * 1.5;
+                    numberixi.dragReturnVelocity.y = dy * 1.5;
+                    numberixi.maxVel = numberixi.returningMaxVel;
+                  }
                 });
+
+                if (this.state != NumberixiState.LOCKING) {
+                  this._stopDragging();
+
+                  // check answerixis
+                  // TODO ombouwen net zoals hierboven, met touches() enzo
+                  var answerixis = ig.game.getEntitiesByType('EntityAnswerixi');
+                  var numberixi = this;
+                  answerixis.forEach(function(answerixi) {
+                      var dx = Math.round(numberixi.pos.x - answerixi.pos.x);
+                      var dy = Math.round(numberixi.pos.y - answerixi.pos.y);
+                      var offBy = 100;
+                      if (dx > 51-offBy && dx < 51+offBy && dy > 55-offBy && dy < 55+offBy) {
+                          if (numberixi.number == answerixi.number) {
+                            answerixi.cleanup();
+                            numberixi.cleanup();
+                          }
+                      }
+                  });
+                }
 
           }
 
           // Als je uit range dragged gaat de numberixi terug.
-        if( distanceToPlayer < maxDragDistance ) {
-            this.pos.x = ig.input.mouse.x - this.dragOffset.x;
-            this.pos.y = ig.input.mouse.y - this.dragOffset.y;
-          }else {
-              this._stopDragging();
-        }
+          if( distanceToPlayer < maxDragDistance ) {
+              this.pos.x = ig.input.mouse.x - this.dragOffset.x;
+              this.pos.y = ig.input.mouse.y - this.dragOffset.y;
+            } else {
+                this._stopDragging();
+          }
           break;
 
-      case NumberixiState.RETURNING:
+        //TODO gelijk trekken met LOCKING (targetPos gebruiken enzo)
+        case NumberixiState.RETURNING:
 
           var originalXPosReached = (this.dragReturnVelocity.x < 0 && this.pos.x <= this.dragStartPos.x) || (this.dragReturnVelocity.x >= 0 && this.pos.x >= this.dragStartPos.x);
-        var originalYPosReached = (this.dragReturnVelocity.y < 0 && this.pos.y <= this.dragStartPos.y) || (this.dragReturnVelocity.y >= 0 && this.pos.y >= this.dragStartPos.y);
+          var originalYPosReached = (this.dragReturnVelocity.y < 0 && this.pos.y <= this.dragStartPos.y) || (this.dragReturnVelocity.y >= 0 && this.pos.y >= this.dragStartPos.y);
 
-        if (originalXPosReached && originalYPosReached) {
-          this.state = NumberixiState.IDLE;
-          return;
-        }
+          if (originalXPosReached && originalYPosReached) {
+            this.state = NumberixiState.IDLE;
+            return;
+          }
 
-            this.vel.x = originalXPosReached ? 0 : this.dragReturnVelocity.x;
-            this.vel.y = originalYPosReached ? 0 : this.dragReturnVelocity.y;
+          this.vel.x = originalXPosReached ? 0 : this.dragReturnVelocity.x;
+          this.vel.y = originalYPosReached ? 0 : this.dragReturnVelocity.y;
 
-            break;
-        }
+          break;
+
+        case NumberixiState.LOCKING:
+
+          var targetXPosReached = (this.dragReturnVelocity.x < 0 && this.pos.x <= this.targetPos.x) || (this.dragReturnVelocity.x >= 0 && this.pos.x >= this.targetPos.x);
+          var targetYPosReached = (this.dragReturnVelocity.y < 0 && this.pos.y <= this.targetPos.y) || (this.dragReturnVelocity.y >= 0 && this.pos.y >= this.targetPos.y);
+
+          if (targetXPosReached && targetYPosReached) {
+            this.state = NumberixiState.LOCKED;
+            if (!this.dropTarget.numberixi1) {
+              this.dropTarget.numberixi1 = this;
+            } else {
+              this.dropTarget.numberixi2 = this;
+            }
+            return;
+          }
+
+          this.vel.x = targetXPosReached ? 0 : this.dragReturnVelocity.x;
+          this.vel.y = targetYPosReached ? 0 : this.dragReturnVelocity.y;
+
+          break;
+
+        case NumberixiState.LOCKED:
+          this.vel.x = 0;
+          this.vel.y = 0;
+          break;
+      }
 
     this.parent();
   },
@@ -200,9 +261,6 @@ EntityNumberixi = ig.Entity.extend({
         }
       }
       this.parent( res );
-  },
-
-  check: function( other ) {
   }
 });
 
