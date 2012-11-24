@@ -9,6 +9,7 @@ ig.module(
     	PlayerState = {
             START: 'START',
             ENTERING: 'ENTERING',
+            ENTERED: 'ENTERED',
     		PLAYING: 'PLAYING',
     		EXITIXING: 'EXITIXING'
     	};
@@ -32,7 +33,8 @@ ig.module(
             exitixi: undefined,
 
             originalAnimSheetWidth: 123,
-            animSheet:new ig.AnimationSheet('media/player.png', 123, 174),
+            animSheet:new ig.AnimationSheet('media/player_entering.png', 123, 174),
+            otherImage:new ig.Image( 'media/player.png' ),
 
             originalPos: undefined,
 
@@ -51,7 +53,7 @@ ig.module(
                 // Add the animations
                 this.addAnim('pause', 2, [0]);
                 this.addAnim('idle', .3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
-                this.addAnim('run', 0.07, [0, 1]);
+                this.addAnim('run', 0.1, [0, 1]);
 
                 this.currentAnim.flip.x = this.flip;
             },
@@ -63,26 +65,30 @@ ig.module(
 
             update:function () {
                 if (this.state == PlayerState.START && this.entrance) {
-                    this.pos.x = this.entrance.pos.x + this.entrance.size.x;
+                    this.pos.x = this.entrance.pos.x + this.entrance.size.x - 90;
                     this.state = PlayerState.ENTERING;
                 }
                 else if (this.state == PlayerState.ENTERING) {
-                    this.animSheet.width = Math.min(this.size.x, this.entrance.pos.x + this.entrance.size.x - this.pos.x);
+                    this.animSheet.width = Math.min(this.size.x, (this.entrance.pos.x + this.entrance.size.x - this.pos.x - 90)*20.0);
                     
-                    if (this.pos.x > this.originalPos.x) {
-                        this.vel.x = -this.maxVel.x;
-                        console.log(this.pos.x);
+                    if (this.pos.x >= 30) {
+                        this.vel.x = -this.maxVel.x / 10;
                     }
-                    else if (this.pos.x <= this.originalPos.x) {
+                    else {
+                        this.state = PlayerState.ENTERED;
+                        this.animSheet.image = this.otherImage;
+                        this.flip = false;
+                        this.currentAnim.flip.x = this.flip;
+                        this.vel.x = this.maxVel.x;
                         this.entrance.closeDoor();
-                        //this.animSheet.width = this.originalAnimSheetWidth;
+                        this.animSheet.width = this.originalAnimSheetWidth;
                     }
-                    if (this.entrance.isClosed()) {
-                        this.entrance.kill();
-                        this.dest = {x:this.pos.x, y:this.pos.y};
-                        this.state = PlayerState.PLAYING;
-                        ig.game.state = GameState.ENTERED;
-                    }
+                }
+                else if (this.state == PlayerState.ENTERED && this.entrance.isClosed()) {
+                    this.entrance.kill();
+                    this.dest = {x:this.pos.x, y:this.pos.y};
+                    this.state = PlayerState.PLAYING;
+                    ig.game.state = GameState.ENTERED;
                 }
             	else if (this.state == PlayerState.PLAYING)
             	{
@@ -135,15 +141,14 @@ ig.module(
                     //     this.animSheet.width, this.animSheet.height
                     // );
 
-                    var weirdGraphicOffset = 3;
-                    this.animSheet.width = width - weirdGraphicOffset;
+                    this.animSheet.width = width;
                     this.currentAnim = this.anims.pause;
 
                     if (width <= 0) {
                         this.exitixi.closeDoor();
                     }
 
-                    if (width <= -100) {
+                    if (width <= -150) {
                         ig.game.loadNextLevel();
                     }
                 }

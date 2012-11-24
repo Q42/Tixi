@@ -35,6 +35,7 @@ EntityExitixi = ig.Entity.extend({
 		if (ig.game.state == GameState.ENTERED && !this.entrance && this.currentAnim != this.anims.open) {
 			this.anims.open.rewind();
 			this.currentAnim = this.anims.open;
+			ig.game.state = GameState.PLAYING;
 		}
 		this.parent();
 	},
@@ -44,8 +45,8 @@ EntityExitixi = ig.Entity.extend({
 	},
 
 	closeDoor: function () {
-		if (this.currentAnim == this.anims.close) return;
-
+		if (this.currentAnim == this.anims.close || this.currentAnim == this.anims.closed) return;
+		
 		this.anims.close.rewind();
 		this.currentAnim = this.anims.close;
 		this.currentAnim.flip.x = this.entrance;
