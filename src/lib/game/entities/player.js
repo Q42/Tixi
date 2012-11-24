@@ -48,9 +48,8 @@ EntityPlayer = ig.Entity.extend({
   init:function (x, y, settings) {
     this.parent(x, y, settings);
     this.dest = {x:x, y:y};
-    this.animSheet.width = this.originalAnimSheetWidth;
     this.originalPos = this.pos;
-    this.animSheet.width = 0;
+    this.animSheet.drawWidth = 0;
     this.flip = true;
     this.animSheet.image = this.enterImage;
 
@@ -78,7 +77,7 @@ EntityPlayer = ig.Entity.extend({
     if (this.state == PlayerState.START && this.noEntrance)
     {
       this.state = PlayerState.PLAYING;
-      this.animSheet.width = this.originalAnimSheetWidth;
+      this.animSheet.drawWidth = this.originalAnimSheetWidth;
       this.animSheet.image = this.otherImage;
       this.currentAnim.flip.x = false;
       this.flip = false;
@@ -93,7 +92,7 @@ EntityPlayer = ig.Entity.extend({
       this.state = PlayerState.ENTERING;
     }
     else if (this.state == PlayerState.ENTERING) {
-      this.animSheet.width = Math.min(this.size.x, (this.entrance.pos.x + this.entrance.size.x - this.pos.x - 90)*20.0);
+      this.animSheet.drawWidth = Math.min(this.size.x, (this.entrance.pos.x + this.entrance.size.x - this.pos.x - 90)*20.0);
       
       if (this.pos.x >= 30) {
         this.vel.x = -this.maxVel.x / 10;
@@ -105,7 +104,7 @@ EntityPlayer = ig.Entity.extend({
         this.currentAnim.flip.x = this.flip;
         this.vel.x = this.maxVel.x;
         this.entrance.closeDoor();
-        this.animSheet.width = this.originalAnimSheetWidth;
+        this.animSheet.drawWidth = this.originalAnimSheetWidth;
       }
     }
     else if (this.state == PlayerState.ENTERED && this.entrance.isClosed()) {
@@ -169,18 +168,8 @@ EntityPlayer = ig.Entity.extend({
     if (this.state == PlayerState.EXITIXING) {
       var width = Math.min(this.size.x, this.exitixi.pos.x + this.exitixi.size.x - this.pos.x);
 
-      // this.currentAnim = null;
-      // this.animSheet.image.draw(
-      //   this.pos.x,
-      //   this.pos.y,
-      //   0, 0,
-      //   this.animSheet.width, this.animSheet.height
-      // );
-
       var weirdGraphicalOffset = 3;
-
-      this.animSheet.width = width + weirdGraphicalOffset;
-      this.currentAnim = this.anims.pause;
+      this.animSheet.drawWidth = width + weirdGraphicalOffset;
 
       if (width <= 0) {
         this.exitixi.closeDoor();
