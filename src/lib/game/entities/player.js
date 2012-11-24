@@ -60,10 +60,12 @@ EntityPlayer = ig.Entity.extend({
     this.addAnim('run', 0.1, [0, 1]);
     this.addAnim('beaming', 1, [2]);
 
-    this.magicBeam = ig.game.spawnEntity(EntityMagicBeam, this.pos.x, this.pos.y, {});
-    this.magicBeam.player = this;
-
     this.currentAnim.flip.x = this.flip;
+
+    if (!ig.global.wm) {
+      this.magicBeam = ig.game.spawnEntity(EntityMagicBeam, this.pos.x, this.pos.y, {});
+      this.magicBeam.player = this;
+    }
   },
 
   collideWith:function (other, axis) {
