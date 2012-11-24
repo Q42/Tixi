@@ -145,7 +145,7 @@ ig.Image = ig.Class.extend({
 		if( !this.loaded || tileWidth > this.width || tileHeight > this.height ) { return; }
 		
 		var scale = ig.system.scale;
-		var tileWidthScaled = Math.floor(Math.min(drawWidth, tileWidth) * scale);
+		var tileWidthScaled = Math.floor(Math.min(Math.max(0, drawWidth), tileWidth) * scale);
 		var tileHeightScaled = Math.floor(tileHeight * scale);
 		
 		var scaleX = flipX ? -1 : 1;
