@@ -167,7 +167,9 @@ EntityPlayer = ig.Entity.extend({
       //   this.animSheet.width, this.animSheet.height
       // );
 
-      this.animSheet.width = width;
+      var weirdGraphicalOffset = 3;
+
+      this.animSheet.width = width + weirdGraphicalOffset;
       this.currentAnim = this.anims.pause;
 
       if (width <= 0) {
