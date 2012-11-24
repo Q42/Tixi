@@ -57,7 +57,6 @@ EntityPlayer = ig.Entity.extend({
     this.addAnim('idle', .3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
     this.addAnim('run', 0.1, [0, 1]);
 
-
     this.currentAnim.flip.x = this.flip;
   },
 
