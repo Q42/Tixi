@@ -7,7 +7,8 @@ ig.module(
 .defines(function(){
 
 EntityExitixi = ig.Entity.extend({
-  size: {x: 94, y: 183}, // 100 - 6 magic pixels. idk...
+  size: {x: 100, y: 183},
+  offset: {x: 0, y: 0},
 
   type: ig.Entity.TYPE.B, // Evil enemy group
   checkAgainst: ig.Entity.TYPE.A, // Check against friendly

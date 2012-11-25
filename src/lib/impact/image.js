@@ -137,32 +137,39 @@ ig.Image = ig.Class.extend({
 	},
 	
 	
-	drawTile: function( targetX, targetY, tile, tileWidth, tileHeight, flipX, flipY, drawWidth ) {
+	drawTile: function( targetX, targetY, tile, tileWidth, tileHeight, flipX, flipY, offsetLeft, offsetTop, drawWidth, drawHeight ) {
 		tileHeight = tileHeight ? tileHeight : tileWidth;
 
-		if (typeof drawWidth === 'undefined') drawWidth = Infinity;
+		if (typeof offsetTop === 'undefined') offsetTop = 0;
+		if (typeof offsetLeft === 'undefined') offsetLeft = 0;
+		if (typeof drawWidth === 'undefined') drawWidth = tileWidth;
+		if (typeof drawHeight === 'undefined') drawHeight = tileHeight;
 		
 		if( !this.loaded || tileWidth > this.width || tileHeight > this.height ) { return; }
 		
 		var scale = ig.system.scale;
-		var tileWidthScaled = Math.floor(Math.min(Math.max(0, drawWidth), tileWidth) * scale);
-		var tileHeightScaled = Math.floor(tileHeight * scale);
-		
+		var sourceX = (Math.floor(tile * tileWidth) % this.width) * scale;
+		var sourceY = (Math.floor(tile * tileWidth / this.width) * tileHeight) * scale;
+		var tileWidthScaled = Math.floor((drawWidth - offsetLeft) * scale);
+		var tileHeightScaled = Math.floor((drawHeight - offsetTop) * scale);
+
 		var scaleX = flipX ? -1 : 1;
 		var scaleY = flipY ? -1 : 1;
+		var destX = ig.system.getDrawPos(targetX + offsetLeft) * scaleX - (flipX ? tileWidthScaled : 0);
+		var destY = ig.system.getDrawPos(targetY + offsetTop) * scaleY - (flipY ? tileHeightScaled : 0);
 		
 		if( flipX || flipY ) {
 			ig.system.context.save();
 			ig.system.context.scale( scaleX, scaleY );
 		}
 		ig.system.context.drawImage( 
-			this.data, 
-			( Math.floor(tile * tileWidth) % this.width ) * scale,
-			( Math.floor(tile * tileWidth / this.width) * tileHeight ) * scale,
+			this.data,
+			sourceX + offsetLeft,
+			sourceY + offsetTop,
 			tileWidthScaled,
 			tileHeightScaled,
-			ig.system.getDrawPos(targetX) * scaleX - (flipX ? tileWidthScaled : 0), 
-			ig.system.getDrawPos(targetY) * scaleY - (flipY ? tileHeightScaled : 0),
+			destX,
+			destY,
 			tileWidthScaled,
 			tileHeightScaled
 		);

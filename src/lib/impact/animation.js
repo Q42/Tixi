@@ -8,16 +8,17 @@ ig.module(
 .defines(function(){ "use strict";
 
 ig.AnimationSheet = ig.Class.extend({
-	drawWidth: Infinity,
 	width: 8,
 	height: 8,
 	image: null,
+	clip: null,
 	
 	init: function( path, width, height ) {
 		this.width = width;
 		this.height = height;
 		
 		this.image = new ig.Image( path );
+		this.clip = { left: 0, top: 0, right: 0, bottom: 0 };
 	}
 });
 
@@ -97,11 +98,18 @@ ig.Animation = ig.Class.extend({
 			ig.system.context.globalAlpha = this.alpha;
 		}
 		
-		if( this.angle == 0 ) {		
+		var offsetLeft = Math.max(0, this.sheet.clip.left);
+		var offsetTop = Math.max(0, this.sheet.clip.top);
+		var right = Math.max(0, this.sheet.clip.right);
+		var bottom = Math.max(0, this.sheet.clip.bottom);
+		var drawWidth = Math.min(this.sheet.width, Math.max(0, this.sheet.width - right));
+		var drawHeight = Math.min(this.sheet.height, Math.max(0, this.sheet.height - bottom));
+
+		if( this.angle == 0 ) {
 			this.sheet.image.drawTile(
 				targetX, targetY,
 				this.tile, this.sheet.width, this.sheet.height,
-				this.flip.x, this.flip.y, this.sheet.drawWidth
+				this.flip.x, this.flip.y, offsetLeft, offsetTop, drawWidth, drawHeight
 			);
 		}
 		else {
@@ -114,7 +122,7 @@ ig.Animation = ig.Class.extend({
 			this.sheet.image.drawTile(
 				-this.pivot.x, -this.pivot.y,
 				this.tile, this.sheet.width, this.sheet.height,
-				this.flip.x, this.flip.y, this.sheet.drawWidth
+				this.flip.x, this.flip.y, offsetLeft, offsetTop, drawWidth, drawHeight
 			);
 			ig.system.context.restore();
 		}

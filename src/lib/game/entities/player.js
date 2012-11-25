@@ -30,16 +30,10 @@ EntityPlayer = ig.Entity.extend({
   collides:ig.Entity.COLLIDES.PASSIVE,
 
   state: PlayerState.START,
-  entrance: undefined,
-  exitixi: undefined,
+  entrance: null,
+  exitixi: null,
 
-  originalAnimSheetWidth: 123,
-  animSheet:new ig.AnimationSheet('media/player_entering.png', 123, 174),
-  enterImage:new ig.Image( 'media/player_entering.png' ),
-  otherImage:new ig.Image( 'media/player.png' ),
-
-  originalPos: undefined,
-  magicBeam: undefined,
+  magicBeam: null,
 
   accelGround:400,
   accelLadder:200,
@@ -48,19 +42,13 @@ EntityPlayer = ig.Entity.extend({
   init:function (x, y, settings) {
     this.parent(x, y, settings);
     this.dest = {x:x, y:y};
-    this.originalPos = this.pos;
-    this.animSheet.drawWidth = 0;
-    this.flip = true;
-    this.animSheet.image = this.enterImage;
+    this.animSheet = new ig.AnimationSheet('media/player.png', 123, 174);
 
     // Add the animations
-    this.addAnim('pause', 2, [0]);
     this.addAnim('idle', .3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
     this.addAnim('run', 0.1, [0, 1]);
     this.addAnim('beaming', 1, [2]);
     this.addAnim('joke', 0.2, [0, 0, 0, 0, 0, 0, 0, 8, 9, 8, 8, 9, 8, 9, 8, 9, 0], true);
-
-    this.currentAnim.flip.x = this.flip;
 
     if (!ig.global.wm) {
       this.magicBeam = ig.game.spawnEntity(EntityMagicBeam, this.pos.x, this.pos.y, {});
@@ -76,35 +64,28 @@ EntityPlayer = ig.Entity.extend({
   update:function () {
     if (this.state == PlayerState.START && this.noEntrance)
     {
-      this.state = PlayerState.PLAYING;
-      this.animSheet.drawWidth = this.originalAnimSheetWidth;
-      this.animSheet.image = this.otherImage;
-      this.currentAnim.flip.x = false;
-      this.flip = false;
+      this.currentAnim = this.anims.run;
 
-      this.pos.x = -(this.size.x);
+      this.pos.x = -100;
       this.dest = {x: 80, y: this.pos.y};
       this.state = PlayerState.PLAYING;
       ig.game.state = GameState.ENTERED;
     }
     else if (this.state == PlayerState.START && this.entrance) {
-      this.pos.x = this.entrance.pos.x + this.entrance.size.x - 90;
+      this.currentAnim = this.anims.run;
+      this.pos.x = this.entrance.pos.x - this.size.x;
       this.state = PlayerState.ENTERING;
     }
     else if (this.state == PlayerState.ENTERING) {
-      this.animSheet.drawWidth = Math.min(this.size.x, (this.entrance.pos.x + this.entrance.size.x - this.pos.x - 90)*20.0);
-      
-      if (this.pos.x >= 30) {
-        this.vel.x = -this.maxVel.x / 10;
-      }
-      else {
+
+      var weirdGraphicalOffset = 3;
+      this.currentAnim.sheet.clip.left = this.entrance.pos.x - this.pos.x - weirdGraphicalOffset;
+      this.vel.x = this.maxVel.x;
+
+      if (this.pos.x >= this.entrance.pos.x) {
         this.state = PlayerState.ENTERED;
-        this.animSheet.image = this.otherImage;
-        this.flip = false;
-        this.currentAnim.flip.x = this.flip;
         this.vel.x = this.maxVel.x;
         this.entrance.closeDoor();
-        this.animSheet.drawWidth = this.originalAnimSheetWidth;
       }
     }
     else if (this.state == PlayerState.ENTERED && this.entrance.isClosed()) {
@@ -166,16 +147,16 @@ EntityPlayer = ig.Entity.extend({
     }
 
     if (this.state == PlayerState.EXITIXING) {
-      var width = Math.min(this.size.x, this.exitixi.pos.x + this.exitixi.size.x - this.pos.x);
+      var right = (this.pos.x + this.size.x) - (this.exitixi.pos.x + this.exitixi.size.x);
 
       var weirdGraphicalOffset = 3;
-      this.animSheet.drawWidth = width + weirdGraphicalOffset;
+      this.animSheet.clip.right = right + weirdGraphicalOffset;
 
-      if (width <= 0) {
+      if (right >= this.size.x) {
         this.exitixi.closeDoor();
       }
 
-      if (width <= -150) {
+      if (right > this.size.x + 150) {
         ig.game.loadNextLevel();
       }
     }
@@ -212,19 +193,20 @@ EntityPlayer = ig.Entity.extend({
 EntityMagicBeam = ig.Entity.extend({
   size: { x: 952, y: 21 },
 
-	type: ig.Entity.TYPE.NONE,
-	checkAgainst: ig.Entity.TYPE.B,
-	collides: ig.Entity.COLLIDES.NEVER,
+  type: ig.Entity.TYPE.NONE,
+  checkAgainst: ig.Entity.TYPE.B,
+  collides: ig.Entity.COLLIDES.NEVER,
   zIndex: 3,
 
   player: undefined,
   target: undefined,
 
-	animSheet: new ig.AnimationSheet('media/magic-beam.png', 952, 21),
+  animSheet: null,
 
   init: function (x, y, settings) {
     this.parent(x, y, settings);
 
+    this.animSheet = new ig.AnimationSheet('media/magic-beam.png', 952, 21);
     this.gravityFactor = 0;
 
     // Add the animations
@@ -255,7 +237,7 @@ EntityMagicBeam = ig.Entity.extend({
     this.pos.x = wandPos.x;
     this.pos.y = wandPos.y;
     this.size.width = this.dist(wandPos, targetCenter);
-    this.animSheet.drawWidth = this.size.width;
+    this.animSheet.clip.right = this.animSheet.width - this.size.width;
     this.currentAnim.angle = -this.angle(wandPos, targetCenter) - Math.PI * .5;
     this.currentAnim.pivot.x = 0;
     this.currentAnim.pivot.y = 10;

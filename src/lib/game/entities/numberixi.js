@@ -77,7 +77,6 @@ EntityNumberixi = ig.Entity.extend({
         }
 
         this._stopDragging = function() {
-          console.log('_stopDragging')
           this.state = NumberixiState.RETURNING;
           this.gravityFactor = 0;
           var dx = this.dragStartPos.x - this.pos.x;
