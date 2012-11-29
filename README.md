@@ -1,9 +1,11 @@
-tixi
+Tixi
 ====
 
 Accidental "math" game for kids.
 
-![Q42 screenshot](/Q42/MathDragon/raw/master/screenshot.png)
+![Tixi shot](/Q42/Tixi/raw/master/screenshot.png)
+
+Play demo at: http://demo.playtixi.com/
 
 Hue ambilight
 -------------
