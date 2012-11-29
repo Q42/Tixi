@@ -88,7 +88,7 @@ EntityNumberixi = ig.Entity.extend({
 
       var player = this.getPlayer();
       var distanceToPlayer = this.distanceTo( player )
-      var maxDragDistance = 400
+      var maxDragDistance = 2000;
 
         switch (this.state) {
           case NumberixiState.IDLE:
