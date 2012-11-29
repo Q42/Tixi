@@ -179,14 +179,24 @@ EntityPlayer = ig.Entity.extend({
   },
 
   startBeaming: function () {
-    this.sound = new ig.Sound( 'media/magic.mp3' );
-    this.sound.volume = 0.05;
-    this.sound.play();
+    try {
+      this.sound = new ig.Sound( 'media/magic.mp3' );
+      this.sound.volume = 0.05;
+      this.sound.play();
+    }
+    catch (e) {
+      // sound stuff sometimes crashes on iPad, ignore
+    }
   },
 
   stopBeaming: function () {
-    if (this.sound)
-      this.sound.stop();
+    try {
+      if (this.sound)
+        this.sound.stop();
+    }
+    catch (e) {
+      // sound stuff sometimes crashes on iPad, ignore
+    }
   },
 });
 
